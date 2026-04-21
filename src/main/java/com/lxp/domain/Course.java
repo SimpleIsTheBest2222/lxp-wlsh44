@@ -85,7 +85,7 @@ public class Course {
 		if (instructorName == null) {
 			return null;
 		}
-		Assert.isTrue(instructorName.length() <= MAXIMUM_INSTRUCTOR_NAME_LENGTH,
+		Assert.isTrue(!instructorName.isBlank() && instructorName.length() <= MAXIMUM_INSTRUCTOR_NAME_LENGTH,
 			ErrorCode.COURSE_INSTRUCTOR_NAME_OUT_OF_RANGE);
 		return instructorName;
 	}

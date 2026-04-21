@@ -45,7 +45,7 @@ public class Instructor {
 
 	private static String validateName(String name) {
 		Assert.notNull(name);
-		Assert.isTrue(!name.isEmpty() && name.length() <= MAXIMUM_NAME_RANGE,
+		Assert.isTrue(!name.isBlank() && name.length() <= MAXIMUM_NAME_RANGE,
 			ErrorCode.INSTRUCTOR_NAME_OUT_OF_RANGE);
 		return name;
 	}
