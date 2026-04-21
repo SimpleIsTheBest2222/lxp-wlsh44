@@ -1,5 +1,37 @@
 # HISTORY
 
+## 2026-04-22 — 도메인 테스트 작성 및 테스트 컨벤션 확립
+
+### 결정 사항
+
+**테스트 도구**
+- JUnit assertions(`assertEquals` 등) 대신 AssertJ 사용 (`assertj-core:3.25.3` 추가)
+- 예외 검증: `hasMessage(ErrorCode.XXX.getMessage())` — `extracting → isEqualTo` 패턴 사용 금지
+
+**테스트 구조 (BDD)**
+- `// given` / `// when` / `// then` 구간 주석 필수
+- when과 then이 한 문장으로 합쳐지는 경우(assertThatThrownBy 등) `// when & then`으로 표기
+
+**테스트 대상 변수 분리**
+- 검증 의도가 드러나도록 테스트 대상 값을 변수로 추출
+  - 경계값: `String tooLongTitle = "가".repeat(51)`, `String maxLengthTitle = "가".repeat(50)`
+  - 공백: `String blankTitle = "   "`
+  - 경계 숫자: `int negativePrice = -1`, `int zeroPrice = 0`
+  - `null`은 자명하므로 변수 불필요
+
+**Course.instructorName 제거**
+- 강사 정보는 Instructor 도메인이 단일 책임으로 관리
+- Course는 강의 자체(제목, 설명, 가격, 레벨, 타임스탬프)만 보유
+- `ErrorCode.COURSE_INSTRUCTOR_NAME_OUT_OF_RANGE` 함께 제거
+
+### 영향 범위
+- `build.gradle` — assertj-core 3.25.3 추가
+- `Course.java` — `instructorName` 필드·검증 제거, `create()`/`createWithId()`/`update()` 시그니처 변경
+- `ErrorCode.java` — `COURSE_INSTRUCTOR_NAME_OUT_OF_RANGE` 제거
+- `CourseTest`, `InstructorTest`, `ContentTest` — 도메인 단위 테스트 신규 작성
+
+---
+
 ## 2026-04-21 — PR 리뷰 반영 (도메인 검증 강화, 설계 결정)
 
 ### 결정 사항
