@@ -62,7 +62,8 @@ com.lms/
 - 삭제: 모든 도메인 soft delete
 
 ## 참조 문서
-- 코드 컨벤션: `.claude/docs/conventions.md`
-- Git 컨벤션: `.claude/docs/git.md`
-- 도메인 상세: `.claude/docs/domain.md`
-- Phase 2 전환: `.claude/docs/phase2.md`
+- 코드 컨벤션: `.docs/conventions.md`
+- Git 컨벤션: `docs/git.md`
+- 도메인 상세: `docs/domain.md`
+- Phase 2 전환: `docs/phase2.md`
+- ui: `docs/ui`
