@@ -14,23 +14,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Course {
 	private static final int MAXIMUM_TITLE_LENGTH = 50;
-	private static final int MAXIMUM_INSTRUCTOR_NAME_LENGTH = 10;
 	private static final int MAXIMUM_DESCRIPTION_LENGTH = 200;
 
 	private Long id;
 	private String title;
-	private String instructorName;
 	private String description;
 	private int price;
 	private Level level;
 	private LocalDateTime createdAt;
 	private LocalDateTime modifiedAt;
 
-	public static Course create(String title, String instructorName, String description, int price, Level level) {
+	public static Course create(String title, String description, int price, Level level) {
 		Course course = new Course();
 
 		course.title = validateTitle(title);
-		course.instructorName = validateInstructorName(instructorName);
 		course.description = validateDescription(description);
 		course.price = validatePrice(price);
 		course.level = validateLevel(level);
@@ -38,26 +35,24 @@ public class Course {
 		return course;
 	}
 
-	public static Course createWithId(Long id, String title, String instructorName, String description, int price,
-		Level level, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+	public static Course createWithId(Long id, String title, String description, int price, Level level,
+		LocalDateTime createdAt, LocalDateTime modifiedAt) {
 		Course course = new Course();
+
 		course.id = validateId(id);
 		course.title = validateTitle(title);
-		course.instructorName = validateInstructorName(instructorName);
 		course.description = validateDescription(description);
 		course.price = validatePrice(price);
 		course.level = validateLevel(level);
 		course.createdAt = createdAt;
 		course.modifiedAt = modifiedAt;
+
 		return course;
 	}
 
-	public void update(String title, String instructorName, String description, Integer price, Level level) {
+	public void update(String title, String description, Integer price, Level level) {
 		if (title != null) {
 			this.title = validateTitle(title);
-		}
-		if (instructorName != null) {
-			this.instructorName = validateInstructorName(instructorName);
 		}
 		if (description != null) {
 			this.description = validateDescription(description);
@@ -79,15 +74,6 @@ public class Course {
 		Assert.notNull(title);
 		Assert.isTrue(!title.isBlank() && title.length() <= MAXIMUM_TITLE_LENGTH, ErrorCode.COURSE_TITLE_OUT_OF_RANGE);
 		return title;
-	}
-
-	private static String validateInstructorName(String instructorName) {
-		if (instructorName == null) {
-			return null;
-		}
-		Assert.isTrue(!instructorName.isBlank() && instructorName.length() <= MAXIMUM_INSTRUCTOR_NAME_LENGTH,
-			ErrorCode.COURSE_INSTRUCTOR_NAME_OUT_OF_RANGE);
-		return instructorName;
 	}
 
 	private static String validateDescription(String description) {

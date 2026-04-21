@@ -21,7 +21,6 @@ public enum ErrorCode {
 	// Course
 	NOT_FOUND_COURSE_LEVEL("유효하지 않은 난이도입니다. (LOW/MIDDLE/HIGH)"),
 	COURSE_TITLE_OUT_OF_RANGE("강의 제목의 길이가 범위를 벗어났습니다."),
-	COURSE_INSTRUCTOR_NAME_OUT_OF_RANGE("강사명의 길이가 범위를 벗어났습니다."),
 	COURSE_DESCRIPTION_OUT_OF_RANGE("강의 설명의 길이가 범위를 벗어났습니다."),
 	COURSE_PRICE_NEGATIVE("강의 가격은 0 이상이어야 합니다."),
 
