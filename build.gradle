@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'checkstyle'
 }
 
 group = 'wlsh.project'
@@ -10,9 +11,25 @@ repositories {
 }
 
 dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.36'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+checkstyle {
+    maxWarnings = 0
+    configFile = file("${rootDir}/docs/checkstyle/naver-checkstyle-rules.xml")
+    configProperties = ["suppressionFile": "${rootDir}/docs/checkstyle/naver-checkstyle-suppressions.xml"]
+    toolVersion = "10.21.4"
 }
 
 test {
