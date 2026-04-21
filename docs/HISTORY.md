@@ -1,5 +1,30 @@
 # HISTORY
 
+## 2026-04-21 — PR 리뷰 반영 (도메인 검증 강화, 설계 결정)
+
+### 결정 사항
+
+**타임스탬프 관리 주체**
+- `createdAt` / `modifiedAt`은 Repository 책임으로 확정
+- 도메인 `update()`에서 `modifiedAt` 갱신 제거 — 도메인이 시계(`LocalDateTime.now()`)에 의존하면 테스트가 어렵고 관심사 분리가 깨짐
+
+**불변 도메인 설계 검토 → 미적용 결정**
+- 장점: 상태 변이 차단, 추론 용이
+- 단점: Phase 2 JDBC 전환 시 변경 필드 추적 복잡도 증가, 현재 패턴(`@NoArgsConstructor(PRIVATE)` + validate)이 이미 통제된 가변성을 제공함
+- 현재 구조 유지
+
+**from() 제거 (ContentType, Level)**
+- null 방어·Locale 처리 등 구현 부담 대비 현재 사용처 없음
+- View 계층 구현 시 실제 필요성이 확인되면 재구현
+
+### 수정 내역
+- `Instructor.validateName`: `isEmpty()` → `isBlank()` (공백-only 차단)
+- `Course.validateInstructorName`: `isBlank()` + 길이 조건 추가
+- `ContentType`, `Level`: `from()` 제거
+- `LxpException`: `Objects.requireNonNull`로 null errorCode NPE 방어
+
+---
+
 ## 2026-04-21 — GitHub Issue / PR 작성 컨벤션 확립
 
 ### 결정 사항
