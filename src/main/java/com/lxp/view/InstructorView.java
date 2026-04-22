@@ -1,5 +1,7 @@
 package com.lxp.view;
 
+import java.util.List;
+
 import com.lxp.controller.InstructorController;
 import com.lxp.view.command.InstructorCommand;
 
@@ -8,27 +10,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InstructorView implements MenuStrategy<InstructorCommand> {
 
-	private final MenuRunner menuRunner;
+	private final MenuRenderer menuRenderer;
 	private final InstructorController instructorController;
 	private final InstructorListView instructorListView;
 
 	public void run() {
-		menuRunner.run(this);
+		menuRenderer.render(this);
 	}
 
 	@Override
-	public String title() {
-		return "강사 관리";
-	}
-
-	@Override
-	public String body() {
-		return "";
-	}
-
-	@Override
-	public InstructorCommand[] commands() {
-		return InstructorCommand.values();
+	public MenuScreen screen() {
+		return new MenuScreen("강사 관리", "", List.of(InstructorCommand.values()));
 	}
 
 	@Override

@@ -1,5 +1,40 @@
 # HISTORY
 
+## 2026-04-22 — 콘솔 메뉴 아키텍처 규칙 정리
+
+### 결정 사항
+
+**View / Controller 책임 분리**
+- `view`는 응답 DTO를 받아 출력 형식과 화면 흐름을 결정
+- `controller`는 화면에 필요한 데이터를 완성된 형태로 반환
+- `handle()`에는 화면 전환과 컨트롤러 호출만 남기고, 비즈니스 판단은 넣지 않기로 정리
+
+**메뉴 화면 상태 모델**
+- 메뉴 화면의 출력 정보는 `MenuScreen` 값 객체로 묶음
+- `MenuStrategy`는 `title()` / `body()` / `commands()` 개별 노출 대신 `screen()`으로 화면 상태를 제공
+- `MenuRenderer`가 `MenuScreen`을 받아 공통 렌더링 순서를 처리
+
+**공통화 원칙**
+- 공통화는 실행 골격만 묶고, 메뉴 의미까지 억지로 추상화하지 않음
+- 공용 `ListCommand`는 제거하고 `CourseListCommand`, `InstructorListCommand`로 분리
+- 메뉴 라벨은 각 command enum이 완성형 문구를 직접 보유
+
+**문서화**
+- 현재 콘솔 UI 구조와 유지 규칙을 `docs/architecture.md`에 정리
+- `CLAUDE.md` 참조 문서 목록에 아키텍처 가이드 추가
+
+### 영향 범위
+- `MenuRunner.java` → `MenuRenderer.java` 명칭 변경
+- `MenuScreen.java` 추가
+- `MenuStrategy.java` — `screen()` 중심 계약으로 변경
+- `MainView.java`, `CourseView.java`, `CourseListView.java`, `InstructorView.java`, `InstructorListView.java` — `MenuScreen` 반환 방식으로 전환
+- `CourseListCommand.java`, `InstructorListCommand.java` 추가
+- `ListCommand.java` 삭제
+- `docs/architecture.md` 추가
+- `CLAUDE.md` 참조 문서 목록 갱신
+
+---
+
 ## 2026-04-22 — View 중심 콘솔 구조로 전환
 
 ### 결정 사항

@@ -5,8 +5,4 @@ public interface MenuCommand {
 	int getValue();
 
 	String getLabel();
-
-	default boolean isSelectable() {
-		return false;
-	}
 }

@@ -1,5 +1,7 @@
 package com.lxp.view.command;
 
+import java.util.Arrays;
+
 import com.lxp.exception.ErrorCode;
 import com.lxp.exception.LxpException;
 
@@ -18,12 +20,10 @@ public enum CourseCommand implements MenuCommand {
 	private final String label;
 
 	public static CourseCommand from(int value) {
-		for (CourseCommand command : values()) {
-			if (command.value == value) {
-				return command;
-			}
-		}
-		throw new LxpException(ErrorCode.INVALID_INPUT);
+		return Arrays.stream(values())
+			.filter(command -> command.value == value)
+			.findFirst()
+			.orElseThrow(() -> new LxpException(ErrorCode.INVALID_INPUT));
 	}
 
 }

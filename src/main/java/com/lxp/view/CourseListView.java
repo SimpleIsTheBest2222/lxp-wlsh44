@@ -1,42 +1,38 @@
 package com.lxp.view;
 
+import java.util.List;
+
 import com.lxp.controller.CourseController;
-import com.lxp.view.command.ListCommand;
+import com.lxp.view.command.CourseListCommand;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CourseListView implements MenuStrategy<ListCommand> {
+public class CourseListView implements MenuStrategy<CourseListCommand> {
 
-	private final MenuRunner menuRunner;
+	private final MenuRenderer menuRenderer;
 	private final CourseController courseController;
 
 	public void run() {
-		menuRunner.run(this);
+		menuRenderer.render(this);
 	}
 
 	@Override
-	public String title() {
-		return "강의 목록";
+	public MenuScreen screen() {
+		return new MenuScreen(
+			"강의 목록",
+			OutputView.GRAY + "  등록된 강의가 없습니다." + OutputView.RESET,
+			List.of(CourseListCommand.values())
+		);
 	}
 
 	@Override
-	public String body() {
-		return OutputView.GRAY + "  등록된 강의가 없습니다." + OutputView.RESET;
+	public CourseListCommand parse(int input) {
+		return CourseListCommand.from(input);
 	}
 
 	@Override
-	public ListCommand[] commands() {
-		return ListCommand.values();
-	}
-
-	@Override
-	public ListCommand parse(int input) {
-		return ListCommand.from(input);
-	}
-
-	@Override
-	public boolean handle(ListCommand command) {
+	public boolean handle(CourseListCommand command) {
 		switch (command) {
 			case SELECT -> {
 				courseController.findById();
@@ -47,10 +43,5 @@ public class CourseListView implements MenuStrategy<ListCommand> {
 			}
 		}
 		return true;
-	}
-
-	@Override
-	public String menuPrefix() {
-		return "강의";
 	}
 }

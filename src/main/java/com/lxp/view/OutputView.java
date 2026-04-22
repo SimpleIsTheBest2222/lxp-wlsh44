@@ -1,5 +1,8 @@
 package com.lxp.view;
 
+import java.util.List;
+import java.util.Objects;
+
 import com.lxp.view.command.MenuCommand;
 
 import lombok.AccessLevel;
@@ -25,22 +28,18 @@ class OutputView {
 	}
 
 	static void printBody(String body) {
-		String safeBody = body == null ? "" : body;
+		String safeBody = Objects.requireNonNullElse(body, "");
 		if (!safeBody.isBlank()) {
 			System.out.println(safeBody);
 		}
 		System.out.println();
 	}
 
-	static void printMenu(MenuCommand[] commands) {
-		printMenu(commands, "");
-	}
-
-	static void printMenu(MenuCommand[] commands, String selectLabelPrefix) {
+	static void printMenu(List<? extends MenuCommand> commands) {
 		System.out.println(LINE_S);
 		System.out.println();
 		for (MenuCommand command : commands) {
-			System.out.println(formatMenuLine(command, selectLabelPrefix));
+			System.out.println(formatMenuLine(command));
 		}
 		System.out.println();
 		System.out.println(LINE_S);
@@ -67,12 +66,8 @@ class OutputView {
 		return "%33s".formatted(title);
 	}
 
-	private static String formatMenuLine(MenuCommand command, String selectLabelPrefix) {
-		String safePrefix = selectLabelPrefix == null ? "" : selectLabelPrefix;
+	private static String formatMenuLine(MenuCommand command) {
 		String label = command.getLabel();
-		if (!safePrefix.isBlank() && command.isSelectable()) {
-			label = safePrefix + " " + label;
-		}
 		return "  %d. %s".formatted(command.getValue(), label);
 	}
 }

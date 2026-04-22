@@ -70,5 +70,6 @@ com.lxp/
 - 코드 컨벤션: `docs/conventions.md`
 - Git 컨벤션: `docs/git.md`
 - 도메인 상세: `docs/domain.md`
+- 아키텍처 가이드: `docs/architecture.md`
 - Phase 2 전환: `docs/phase2.md`
 - ui: `docs/ui`

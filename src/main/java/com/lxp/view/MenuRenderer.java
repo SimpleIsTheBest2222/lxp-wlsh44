@@ -4,15 +4,18 @@ import com.lxp.exception.ErrorCode;
 import com.lxp.exception.LxpException;
 import com.lxp.view.command.MenuCommand;
 
-public class MenuRunner {
+public class MenuRenderer {
 
-	public <T extends MenuCommand> void run(MenuStrategy<T> strategy) {
+	public <T extends MenuCommand> void render(MenuStrategy<T> strategy) {
 		boolean running = true;
 		while (running) {
-			OutputView.printHeader(strategy.title());
-			OutputView.printBody(strategy.body());
-			OutputView.printMenu(strategy.commands(), strategy.menuPrefix());
+			MenuScreen screen = strategy.screen();
+
+			OutputView.printHeader(screen.title());
+			OutputView.printBody(screen.body());
+			OutputView.printMenu(screen.commands());
 			OutputView.printPrompt();
+
 			try {
 				T command = strategy.parse(InputView.readInt());
 				running = strategy.handle(command);
