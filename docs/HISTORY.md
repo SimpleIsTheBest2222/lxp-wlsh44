@@ -1,5 +1,57 @@
 # HISTORY
 
+## 2026-04-22 — View 중심 콘솔 구조로 전환
+
+### 결정 사항
+
+**메인 실행 흐름**
+- `MainController` 중심 루프를 제거하고 `MainView`가 애플리케이션 진입 루프를 담당
+- `LxpApplication`은 `new AppConfig().mainView().run()`으로 시작
+
+**View 중심 메뉴 구조**
+- `MainView`, `CourseView`, `InstructorView`, `CourseListView`, `InstructorListView` 추가
+- 각 View가 자신의 `printMenu()` / `printList()`와 입력 루프를 직접 관리
+- 컨트롤러는 상세 구현 없이 호출 지점만 제공하는 형태로 축소
+  - `CourseController`: `register()`, `findAll()`, `findById()`
+  - `InstructorController`: `register()`, `findAll()`, `findById()`
+
+**command 패키지 위치 조정**
+- 메뉴 선택 enum은 Controller 책임이 아니라 View 책임으로 판단
+- `MainCommand`, `CourseCommand`, `InstructorCommand`, `ListCommand`를 `view/command`로 이동
+- 공통 메뉴 출력을 위해 `MenuCommand` 인터페이스 추가
+
+**출력 구조 정리**
+- `OutputView`는 화면 출력을 `header` / `body` / `menu`로 분리
+- 메뉴 문구는 하드코딩 문자열이 아니라 command enum의 `value`, `label`을 기반으로 동적 생성
+- 리스트 화면의 `선택`은 prefix를 받아 `강의 선택`, `강사 선택`으로 출력
+
+**InputView / OutputView 유틸화**
+- 두 클래스는 `view` 패키지 공용 util 성격으로 사용
+- 클래스 접근제어자는 package-private으로 변경
+- 메서드는 모두 `static`으로 전환
+- `AppConfig`는 더 이상 `InputView`, `OutputView` 인스턴스를 생성하거나 주입하지 않음
+
+**중복 제거 방식 조정**
+- `Abstract` 상속 기반 공통화 대신 Strategy 패턴 선택
+- `MenuRunner`가 공통 루프(`while`, `try-catch`, 공통 출력)를 담당
+- 각 View는 `MenuStrategy`를 구현해 화면별 제목, 본문, command 파싱, 처리 로직만 제공
+
+**목록 화면 입력 흐름 정리**
+- `CourseListView`, `InstructorListView`도 다른 메뉴 화면과 동일하게 반복 입력 루프를 사용
+- 오입력 시 현재 목록 화면에 머물며 재입력 가능
+
+### 영향 범위
+- `LxpApplication.java` — `mainController()` → `mainView()` 진입점 변경
+- `AppConfig.java` — View 조립 중심으로 재구성, 입출력 유틸 주입 제거
+- `MainController.java` 삭제
+- `CourseController.java`, `InstructorController.java` — placeholder 메서드만 남기는 형태로 단순화
+- `InputView.java`, `OutputView.java` — package-private static util 형태로 전환
+- `MainView.java`, `CourseView.java`, `InstructorView.java`, `CourseListView.java`, `InstructorListView.java` — 메뉴/리스트 루프와 컨트롤러 호출 연결
+- `view/command/*` — 메뉴 enum 및 `MenuCommand` 추가
+- `MenuRunner.java`, `MenuStrategy.java` — 공통 메뉴 실행 전략 추가
+
+---
+
 ## 2026-04-22 — 도메인 테스트 작성 및 테스트 컨벤션 확립
 
 ### 결정 사항
