@@ -5,23 +5,22 @@ import java.util.Scanner;
 import com.lxp.exception.ErrorCode;
 import com.lxp.exception.LxpException;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-class InputView {
+@RequiredArgsConstructor
+public class InputView {
 
-	private static final Scanner SCANNER = new Scanner(System.in);
+	private final Scanner scanner;
 
-	static int readInt() {
+	public int readInt() {
 		try {
-			return Integer.parseInt(SCANNER.nextLine().trim());
+			return Integer.parseInt(scanner.nextLine().trim());
 		} catch (NumberFormatException e) {
 			throw new LxpException(ErrorCode.INVALID_INPUT);
 		}
 	}
 
-	static String readLine() {
-		return SCANNER.nextLine().trim();
+	public String readLine() {
+		return scanner.nextLine().trim();
 	}
 }

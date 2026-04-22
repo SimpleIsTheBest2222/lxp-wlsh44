@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 public class CourseListView implements MenuStrategy<CourseListCommand> {
 
 	private final MenuRenderer menuRenderer;
+	private final OutputView outputView;
 	private final CourseController courseController;
 
 	public void run() {
@@ -21,7 +22,7 @@ public class CourseListView implements MenuStrategy<CourseListCommand> {
 	public MenuScreen screen() {
 		return new MenuScreen(
 			"강의 목록",
-			OutputView.GRAY + "  등록된 강의가 없습니다." + OutputView.RESET,
+			outputView.muted("  등록된 강의가 없습니다."),
 			List.of(CourseListCommand.values())
 		);
 	}
@@ -36,7 +37,7 @@ public class CourseListView implements MenuStrategy<CourseListCommand> {
 		switch (command) {
 			case SELECT -> {
 				courseController.findById();
-				OutputView.printNotImplemented();
+				outputView.printNotImplemented();
 			}
 			case BACK -> {
 				return false;

@@ -4,26 +4,32 @@ import com.lxp.exception.ErrorCode;
 import com.lxp.exception.LxpException;
 import com.lxp.view.command.MenuCommand;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class MenuRenderer {
+
+	private final InputView inputView;
+	private final OutputView outputView;
 
 	public <T extends MenuCommand> void render(MenuStrategy<T> strategy) {
 		boolean running = true;
 		while (running) {
 			MenuScreen screen = strategy.screen();
 
-			OutputView.printHeader(screen.title());
-			OutputView.printBody(screen.body());
-			OutputView.printMenu(screen.commands());
-			OutputView.printPrompt();
+			outputView.printHeader(screen.title());
+			outputView.printBody(screen.body());
+			outputView.printMenu(screen.commands());
+			outputView.printPrompt();
 
 			try {
-				T command = strategy.parse(InputView.readInt());
+				T command = strategy.parse(inputView.readInt());
 				running = strategy.handle(command);
 			} catch (LxpException e) {
-				OutputView.printError(e.getErrorCode().getMessage());
+				outputView.printError(e.getErrorCode().getMessage());
 			} catch (Exception e) {
-				OutputView.printError(ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
-				OutputView.printError(e.getMessage());
+				outputView.printError(ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
+				outputView.printError(e.getMessage());
 			}
 		}
 	}
