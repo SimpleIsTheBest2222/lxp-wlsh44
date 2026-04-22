@@ -5,6 +5,7 @@
 Plain Java 콘솔 → JDBC + MySQL 단계적 전환 프로젝트.
 
 ## 현재 단계
+
 Phase 1 — Plain Java + InMemory (ArrayList)
 
 ## Commands
@@ -30,7 +31,7 @@ Phase 1 — Plain Java + InMemory (ArrayList)
 
 - Java (version from local toolchain)
 - Gradle wrapper (`./gradlew`)
-- JUnit 5 (`junit-bom:5.10.0`) for tests
+- JUnit 5 (`junit-bom:5.10.0`) + AssertJ (`assertj-core:3.25.3`) for tests
 
 ## Source layout
 
@@ -40,29 +41,33 @@ src/test/java/   — test code
 ```
 
 ## 패키지 구조
-```
-com.lms/
-├── LmsApplication.java
-├── config/AppConfig.java
-├── dispatcher/
-├── controller/
-├── service/
-├── repository/
-│   └── inmemory/
+
+```text
+com.lxp/
+├── LxpApplication.java
+├── common/
+│   └── validate/       # Assert
 ├── domain/
 │   └── enums/          # Level, ContentType
+├── exception/          # ErrorCode, LxpException
+├── config/
+├── repository/
+│   └── inmemory/
+├── service/
 ├── view/
-└── exception/
+└── controller/
 ```
 
 ## 도메인 요약
-- Course: title(≤50), instructorName(≤10), description(≤200), price(≥0), level(LOW/MIDDLE/HIGH)
+
+- Course: title(≤50), description(≤200), price(≥0), level(LOW/MIDDLE/HIGH)
 - Content: title(≤50), content(≤200), contentType(VIDEO/TEXT/FILE), seq
 - Instructor: name(≤10), introduction(≤100)
 - 삭제: 모든 도메인 soft delete
 
 ## 참조 문서
-- 코드 컨벤션: `.docs/conventions.md`
+
+- 코드 컨벤션: `docs/conventions.md`
 - Git 컨벤션: `docs/git.md`
 - 도메인 상세: `docs/domain.md`
 - Phase 2 전환: `docs/phase2.md`
