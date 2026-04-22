@@ -1,5 +1,6 @@
 package com.lxp.view;
 
+import com.lxp.exception.ErrorCode;
 import com.lxp.exception.LxpException;
 import com.lxp.view.command.MenuCommand;
 
@@ -17,6 +18,9 @@ public class MenuRunner {
 				running = strategy.handle(command);
 			} catch (LxpException e) {
 				OutputView.printError(e.getErrorCode().getMessage());
+			} catch (Exception e) {
+				OutputView.printError(ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
+				OutputView.printError(e.getMessage());
 			}
 		}
 	}

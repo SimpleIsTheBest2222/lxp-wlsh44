@@ -25,8 +25,9 @@ class OutputView {
 	}
 
 	static void printBody(String body) {
-		if (!body.isBlank()) {
-			System.out.println(body);
+		String safeBody = body == null ? "" : body;
+		if (!safeBody.isBlank()) {
+			System.out.println(safeBody);
 		}
 		System.out.println();
 	}
@@ -67,9 +68,10 @@ class OutputView {
 	}
 
 	private static String formatMenuLine(MenuCommand command, String selectLabelPrefix) {
+		String safePrefix = selectLabelPrefix == null ? "" : selectLabelPrefix;
 		String label = command.getLabel();
-		if (!selectLabelPrefix.isBlank() && "선택".equals(label)) {
-			label = selectLabelPrefix + " " + label;
+		if (!safePrefix.isBlank() && command.isSelectable()) {
+			label = safePrefix + " " + label;
 		}
 		return "  %d. %s".formatted(command.getValue(), label);
 	}

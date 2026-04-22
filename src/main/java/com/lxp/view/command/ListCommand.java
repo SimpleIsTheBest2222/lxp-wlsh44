@@ -25,4 +25,8 @@ public enum ListCommand implements MenuCommand {
 			.orElseThrow(() -> new LxpException(ErrorCode.INVALID_INPUT));
 	}
 
+	@Override
+	public boolean isSelectable() {
+		return this == SELECT;
+	}
 }
