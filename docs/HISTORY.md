@@ -1,5 +1,38 @@
 # HISTORY
 
+## 2026-04-22 — Instructor 계층 구조 및 화면 흐름 확장
+
+### 결정 사항
+
+**Layered Architecture 경계 구체화**
+- controller request/response DTO는 유지하되, service 반환형은 response DTO가 아니라 도메인 객체로 통일
+- controller가 service 결과를 화면용 response DTO로 변환하는 책임을 가짐
+- request DTO는 입력 경계 검증만 담당하고, 도메인 규칙 검증은 계속 도메인 내부에서 처리
+
+**Repository Entity 분리**
+- repository 구현 내부에서 도메인 객체 대신 entity를 사용하도록 분리
+- `BaseEntity`에 soft delete 상태와 `createdAt`, `modifiedAt`을 공통화
+- soft delete 상태는 `EntityStatus` enum으로 관리하고, 삭제 시 실제 제거 대신 상태 전이로 처리
+
+**수동 DI 설정 분리**
+- `AppConfig` 하나에 몰려 있던 조립을 `RepositoryConfig`, `ServiceConfig`, `ControllerConfig`, `ViewConfig`로 분리
+- 상위 `AppConfig`는 최종 진입점만 연결하는 역할로 축소
+
+**Instructor 화면 흐름 확장**
+- 강사 등록 이후 목록 반영
+- 강사 선택 화면 추가
+- 강사 선택 후 상세 화면 진입
+- 강사 수정 / 삭제 기능 추가
+- 선택 화면은 기존 view 형식을 유지하되 입력값을 command 객체로 감싸는 방식으로 정리
+
+### 영향 범위
+- `repository/*`, `service/*`, `controller/*` — Instructor 계층 추가 및 경계 정리
+- `view/Instructor*` — 목록/선택/상세/수정/삭제 흐름 구현
+- `config/*` — 계층별 설정 분리
+- `docs/conventions.md`, `docs/architecture.md` — 계층 규칙 문서화
+
+---
+
 ## 2026-04-22 — 콘솔 입출력 인스턴스 주입 및 View 단위 테스트 추가
 
 ### 결정 사항

@@ -68,6 +68,29 @@ T save(T entity);         // insert + update 통합
 void deleteById(Long id); // soft delete
 ```
 
+## Layered Architecture 경계
+- `view`는 입력을 읽고 controller request를 만들어 넘긴다.
+- `controller`는 request/response DTO를 다루며, service 결과를 화면용 response DTO로 변환한다.
+- `service`는 비즈니스 흐름을 처리하고 도메인 객체를 반환한다.
+- `repository`는 도메인 저장 계약을 제공하고, 구현체 내부에서는 entity를 사용해 영속성 관심사를 캡슐화한다.
+
+## Request / Response DTO 규칙
+- request DTO는 controller 계층에 둔다.
+- request DTO의 검증은 입력 경계 검증만 담당하며 `INVALID_INPUT` 같은 입력 예외를 사용한다.
+- service가 request DTO를 파라미터로 예외적으로 받을 수는 있지만, 반환값은 response DTO가 아니라 도메인 객체로 유지한다.
+- response DTO 생성 책임은 controller에 둔다.
+
+## Repository Entity 규칙
+- repository 구현은 도메인 객체를 직접 저장하지 않고 `repository.entity`를 사용한다.
+- entity는 `BaseEntity`를 상속받아 soft delete 상태와 `createdAt`, `modifiedAt`을 공통으로 가진다.
+- soft delete 상태는 `EntityStatus` enum으로 관리한다.
+- 조회 시 삭제된 entity는 제외하고, `deleteById()`는 실제 삭제가 아니라 상태 변경으로 처리한다.
+
+## Config 분리 규칙
+- 수동 DI는 `AppConfig` 하나에 몰아넣지 않고 계층별 config로 분리한다.
+- `RepositoryConfig` → `ServiceConfig` → `ControllerConfig` → `ViewConfig` 순서로 의존성을 조립한다.
+- `AppConfig`는 상위 config들을 연결하고 최종 진입점만 노출한다.
+
 ## 콘솔 출력 (OutputView 상수 정의)
 ```java
 String RESET  = "[0m";
