@@ -15,11 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.lxp.controller.InstructorController;
 import com.lxp.controller.response.InstructorListResponse;
 import com.lxp.controller.response.InstructorSummaryResponse;
-import com.lxp.view.command.InstructorListCommand;
+import com.lxp.view.command.InstructorSelectCommand;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("InstructorListView 테스트")
-class InstructorListViewTest {
+@DisplayName("InstructorSelectView 테스트")
+class InstructorSelectViewTest {
 
 	@Mock
 	private MenuRenderer menuRenderer;
@@ -31,13 +31,13 @@ class InstructorListViewTest {
 	private InstructorController instructorController;
 
 	@Mock
-	private InstructorSelectView instructorSelectView;
+	private InstructorDetailView instructorDetailView;
 
 	@InjectMocks
-	private InstructorListView instructorListView;
+	private InstructorSelectView instructorSelectView;
 
 	@Test
-	@DisplayName("성공 - 등록된 강사가 있으면 목록 본문에 이름들을 출력한다")
+	@DisplayName("성공 - 등록된 강사가 있으면 id를 포함한 목록 본문을 출력한다")
 	void screen_withInstructors() {
 		// given
 		InstructorListResponse response = new InstructorListResponse(List.of(
@@ -45,12 +45,16 @@ class InstructorListViewTest {
 			new InstructorSummaryResponse(2L, "김남준")
 		));
 		when(instructorController.findAll()).thenReturn(response);
+		when(outputView.muted("  선택할 강사 id를 입력하세요. (0: 뒤로 가기)"))
+			.thenReturn("  선택할 강사 id를 입력하세요. (0: 뒤로 가기)");
 
 		// when
-		MenuScreen screen = instructorListView.screen();
+		MenuScreen screen = instructorSelectView.screen();
 
 		// then
-		assertThat(screen.body()).contains("1. 홍길동", "2. 김남준");
+		assertThat(screen.title()).isEqualTo("강사 선택");
+		assertThat(screen.body()).contains("1. 홍길동 (id: 1)", "2. 김남준 (id: 2)");
+		assertThat(screen.body()).contains("선택할 강사 id를 입력하세요. (0: 뒤로 가기)");
 	}
 
 	@Test
@@ -61,31 +65,35 @@ class InstructorListViewTest {
 		when(outputView.muted("  등록된 강사가 없습니다.")).thenReturn("muted");
 
 		// when
-		MenuScreen screen = instructorListView.screen();
+		MenuScreen screen = instructorSelectView.screen();
 
 		// then
-		assertThat(screen.body()).isEqualTo("muted");
+		assertThat(screen.body()).startsWith("muted");
 	}
 
 	@Test
-	@DisplayName("성공 - SELECT 처리 시 강사 조회 후 안내 문구를 출력한다")
+	@DisplayName("성공 - 강사 id를 입력하면 선택한 강사 id를 반환한다")
 	void handle_select() {
+		// given
+		when(instructorController.findById(2L)).thenReturn(new InstructorSummaryResponse(2L, "김남준"));
+
 		// when
-		boolean result = instructorListView.handle(InstructorListCommand.SELECT);
+		boolean result = instructorSelectView.handle(InstructorSelectCommand.from(2));
 
 		// then
-		verify(instructorSelectView).run();
-		assertThat(result).isTrue();
+		verify(instructorController).findById(2L);
+		verify(instructorDetailView).run(2L);
+		assertThat(result).isFalse();
 	}
 
 	@Test
-	@DisplayName("성공 - BACK 처리 시 현재 화면을 종료한다")
+	@DisplayName("성공 - 0을 입력하면 현재 화면을 종료한다")
 	void handle_back() {
 		// when
-		boolean result = instructorListView.handle(InstructorListCommand.BACK);
+		boolean result = instructorSelectView.handle(InstructorSelectCommand.from(0));
 
 		// then
-		verifyNoInteractions(instructorController, instructorSelectView);
+		verifyNoInteractions(instructorController);
 		assertThat(result).isFalse();
 	}
 }

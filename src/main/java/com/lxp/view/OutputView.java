@@ -9,6 +9,7 @@ public class OutputView {
 
 	private static final String RESET = "\033[0m";
 	private static final String CYAN = "\033[36m";
+	private static final String GREEN = "\033[32m";
 	private static final String YELLOW = "\033[33m";
 	private static final String RED = "\033[31m";
 	private static final String GRAY = "\033[90m";
@@ -25,13 +26,16 @@ public class OutputView {
 
 	public void printBody(String body) {
 		String safeBody = Objects.requireNonNullElse(body, "");
+		System.out.println();
 		if (!safeBody.isBlank()) {
 			System.out.println(safeBody);
 		}
-		System.out.println();
 	}
 
 	public void printMenu(List<? extends MenuCommand> commands) {
+		if (commands.isEmpty()) {
+			return;
+		}
 		System.out.println(LINE_S);
 		System.out.println();
 		for (MenuCommand command : commands) {
@@ -39,6 +43,18 @@ public class OutputView {
 		}
 		System.out.println();
 		System.out.println(LINE_S);
+	}
+
+	public void printSectionLine() {
+		System.out.println(LINE_S);
+	}
+
+	public void printLabel(String label) {
+		System.out.print(label);
+	}
+
+	public void printSuccess(String message) {
+		System.out.println(GREEN + message + RESET);
 	}
 
 	public void printNotImplemented() {

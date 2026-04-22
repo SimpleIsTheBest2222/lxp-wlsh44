@@ -17,6 +17,13 @@ public final class Assert {
 		}
 	}
 
+	public static void notEmpty(String value) {
+		notNull(value);
+		if (value.isBlank()) {
+			throw new LxpException(INVALID_INPUT);
+		}
+	}
+
 	public static void isTrue(boolean expression, ErrorCode errorCode) {
 		if (!expression) {
 			throw new LxpException(errorCode);
