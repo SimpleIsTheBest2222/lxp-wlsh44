@@ -21,6 +21,7 @@ import com.lxp.controller.response.InstructorListResponse;
 import com.lxp.controller.response.InstructorRegisterResponse;
 import com.lxp.controller.response.InstructorSummaryResponse;
 import com.lxp.controller.response.InstructorUpdateResponse;
+import com.lxp.domain.Instructor;
 import com.lxp.service.InstructorService;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,8 +39,7 @@ class InstructorControllerTest {
 	void register() {
 		// given
 		InstructorRegisterRequest request = new InstructorRegisterRequest("김남준", "자바 강사");
-		when(instructorService.register(request))
-			.thenReturn(new InstructorRegisterResponse(1L));
+		when(instructorService.register(request)).thenReturn(Instructor.createWithId(1L, "김남준", "자바 강사"));
 
 		// when
 		InstructorRegisterResponse response = instructorController.register(request);
@@ -52,10 +52,10 @@ class InstructorControllerTest {
 	@DisplayName("성공 - 등록된 강사 목록을 조회한다")
 	void findAll() {
 		// given
-		when(instructorService.findAll()).thenReturn(new InstructorListResponse(List.of(
-			new com.lxp.controller.response.InstructorSummaryResponse(1L, "홍길동"),
-			new com.lxp.controller.response.InstructorSummaryResponse(2L, "김남준")
-		)));
+		when(instructorService.findAll()).thenReturn(List.of(
+			Instructor.createWithId(1L, "홍길동", "소개1"),
+			Instructor.createWithId(2L, "김남준", "소개2")
+		));
 
 		// when
 		InstructorListResponse response = instructorController.findAll();
@@ -73,7 +73,7 @@ class InstructorControllerTest {
 	@DisplayName("성공 - id로 강사를 조회한다")
 	void findById() {
 		// given
-		when(instructorService.findById(1L)).thenReturn(new InstructorSummaryResponse(1L, "홍길동"));
+		when(instructorService.findById(1L)).thenReturn(Instructor.createWithId(1L, "홍길동", "소개1"));
 
 		// when
 		InstructorSummaryResponse response = instructorController.findById(1L);
@@ -88,7 +88,7 @@ class InstructorControllerTest {
 	void findDetailById() {
 		// given
 		when(instructorService.findDetailById(1L))
-			.thenReturn(new InstructorDetailResponse(1L, "홍길동", "소개1"));
+			.thenReturn(Instructor.createWithId(1L, "홍길동", "소개1"));
 
 		// when
 		InstructorDetailResponse response = instructorController.findDetailById(1L);
@@ -104,7 +104,7 @@ class InstructorControllerTest {
 	void update() {
 		// given
 		InstructorUpdateRequest request = new InstructorUpdateRequest(1L, "김남준 교수", "스프링 강사");
-		when(instructorService.update(request)).thenReturn(new InstructorUpdateResponse(1L));
+		when(instructorService.update(request)).thenReturn(Instructor.createWithId(1L, "김남준 교수", "스프링 강사"));
 
 		// when
 		InstructorUpdateResponse response = instructorController.update(request);
@@ -118,7 +118,7 @@ class InstructorControllerTest {
 	void delete() {
 		// given
 		InstructorDeleteRequest request = new InstructorDeleteRequest(1L);
-		when(instructorService.delete(request)).thenReturn(new InstructorDeleteResponse(1L));
+		when(instructorService.delete(request)).thenReturn(Instructor.createWithId(1L, "김남준", "자바 강사"));
 
 		// when
 		InstructorDeleteResponse response = instructorController.delete(request);

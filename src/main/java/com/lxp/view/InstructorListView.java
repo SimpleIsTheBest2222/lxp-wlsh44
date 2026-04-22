@@ -41,7 +41,6 @@ public class InstructorListView implements MenuStrategy<InstructorListCommand> {
 		switch (command) {
 			case SELECT -> {
 				instructorSelectView.run();
-				// outputView.printNotImplemented();
 			}
 			case BACK -> {
 				return false;
@@ -54,7 +53,6 @@ public class InstructorListView implements MenuStrategy<InstructorListCommand> {
 		if (response.isEmpty()) {
 			return outputView.muted("  등록된 강사가 없습니다.");
 		}
-		System.out.println();
 		return response.instructors().stream()
 			.map(instructor -> "  %d. %s".formatted(instructor.id(), instructor.name()))
 			.collect(Collectors.joining(System.lineSeparator()));

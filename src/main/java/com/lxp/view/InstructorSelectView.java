@@ -43,15 +43,23 @@ public class InstructorSelectView implements MenuStrategy<InstructorSelectComman
 	}
 
 	private String createBody(InstructorListResponse response) {
+		String baseBody = """
+			%s
+			
+			%s
+			""";
 		if (response.isEmpty()) {
-			return outputView.muted("  등록된 강사가 없습니다.");
+			return baseBody.formatted(
+				outputView.muted("  등록된 강사가 없습니다."),
+				outputView.muted("  선택할 강사 id를 입력하세요. (0: 뒤로 가기)")
+			);
 		}
-		return response.instructors()
-			.stream()
-			.map(instructor -> "  %d. %s (id: %d)".formatted(instructor.id(), instructor.name(), instructor.id()))
-			.collect(Collectors.joining(System.lineSeparator()))
-			+ System.lineSeparator()
-			+ System.lineSeparator()
-			+ outputView.muted("  선택할 강사 id를 입력하세요. (0: 뒤로 가기)");
+		return baseBody.formatted(
+			response.instructors().stream()
+				.map(instructor -> "  %d. %s (id: %d)"
+					.formatted(instructor.id(), instructor.name(), instructor.id()))
+				.collect(Collectors.joining(System.lineSeparator())),
+			outputView.muted("  선택할 강사 id를 입력하세요. (0: 뒤로 가기)")
+		);
 	}
 }

@@ -60,7 +60,11 @@ public class InstructorDetailView implements MenuStrategy<InstructorDetailComman
 			  강사 id  : %d
 			  이름     : %s
 			  소개     : %s
-			""".formatted(response.id(), response.name(), response.introduction());
+			""".formatted(
+			response.id(),
+			response.name(),
+			response.introduction()
+		);
 	}
 
 	private void updateInstructor() {
