@@ -5,6 +5,6 @@ import com.lxp.config.AppConfig;
 public class LxpApplication {
 
 	public static void main(String[] args) {
-		new AppConfig().mainController().run();
+		new AppConfig().mainView().run();
 	}
 }
