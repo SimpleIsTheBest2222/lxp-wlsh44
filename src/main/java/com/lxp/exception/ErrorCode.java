@@ -2,6 +2,7 @@ package com.lxp.exception;
 
 public enum ErrorCode {
 	INVALID_ARGUMENTS("잘못된 인자입니다."),
+	INTERNAL_SERVER_ERROR("예상치 못한 예외입니다."),
 
 	INVALID_INPUT("잘못된 입력입니다."),
 

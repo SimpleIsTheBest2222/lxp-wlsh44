@@ -1,5 +1,120 @@
 # HISTORY
 
+## 2026-04-22 — 콘솔 입출력 인스턴스 주입 및 View 단위 테스트 추가
+
+### 결정 사항
+
+**입출력 공용 인스턴스화**
+- `InputView`, `OutputView`를 static util 대신 공용 인스턴스로 사용하도록 변경
+- `AppConfig`에서 `Scanner`, `InputView`, `OutputView`를 한 번 생성하고 같은 인스턴스를 각 View와 `MenuRenderer`에 주입
+- 이후 등록/상세/수정 화면에서도 동일한 입출력 인스턴스를 재사용하는 방향으로 정리
+
+**MenuRenderer 의존성 변경**
+- `MenuRenderer`는 정적 `InputView`/`OutputView` 호출 대신 주입받은 인스턴스를 사용
+- View 내부의 안내 문구 출력과 muted 본문 생성도 `OutputView` 인스턴스를 통해 처리
+
+**테스트 전략 조정**
+- `MockedStatic` 기반 검증 대신 일반 Mockito mock 주입 방식으로 전환
+- `@ExtendWith(MockitoExtension.class)`와 `@Mock`, `@InjectMocks`를 사용해 중복을 줄임
+- 콘솔 출력 문자열 자체보다 올바른 출력 메서드 호출과 화면 전환 호출 여부를 검증
+
+### 영향 범위
+- `InputView.java`, `OutputView.java` — 인스턴스 기반 공용 컴포넌트로 전환
+- `MenuRenderer.java` — `InputView`, `OutputView` 주입 사용
+- `AppConfig.java` — `Scanner`, `InputView`, `OutputView` 생성 및 공유 주입
+- `CourseView.java`, `CourseListView.java`, `InstructorView.java`, `InstructorListView.java` — `OutputView` 의존성 추가
+- `build.gradle` — Mockito 테스트 의존성 추가
+- `src/test/java/com/lxp/view/*` — `MenuRenderer`, `CourseView`, `InstructorListView` 단위 테스트 추가
+
+---
+
+## 2026-04-22 — 콘솔 메뉴 아키텍처 규칙 정리
+
+### 결정 사항
+
+**View / Controller 책임 분리**
+- `view`는 응답 DTO를 받아 출력 형식과 화면 흐름을 결정
+- `controller`는 화면에 필요한 데이터를 완성된 형태로 반환
+- `handle()`에는 화면 전환과 컨트롤러 호출만 남기고, 비즈니스 판단은 넣지 않기로 정리
+
+**메뉴 화면 상태 모델**
+- 메뉴 화면의 출력 정보는 `MenuScreen` 값 객체로 묶음
+- `MenuStrategy`는 `title()` / `body()` / `commands()` 개별 노출 대신 `screen()`으로 화면 상태를 제공
+- `MenuRenderer`가 `MenuScreen`을 받아 공통 렌더링 순서를 처리
+
+**공통화 원칙**
+- 공통화는 실행 골격만 묶고, 메뉴 의미까지 억지로 추상화하지 않음
+- 공용 `ListCommand`는 제거하고 `CourseListCommand`, `InstructorListCommand`로 분리
+- 메뉴 라벨은 각 command enum이 완성형 문구를 직접 보유
+
+**문서화**
+- 현재 콘솔 UI 구조와 유지 규칙을 `docs/architecture.md`에 정리
+- `CLAUDE.md` 참조 문서 목록에 아키텍처 가이드 추가
+
+### 영향 범위
+- `MenuRunner.java` → `MenuRenderer.java` 명칭 변경
+- `MenuScreen.java` 추가
+- `MenuStrategy.java` — `screen()` 중심 계약으로 변경
+- `MainView.java`, `CourseView.java`, `CourseListView.java`, `InstructorView.java`, `InstructorListView.java` — `MenuScreen` 반환 방식으로 전환
+- `CourseListCommand.java`, `InstructorListCommand.java` 추가
+- `ListCommand.java` 삭제
+- `docs/architecture.md` 추가
+- `CLAUDE.md` 참조 문서 목록 갱신
+
+---
+
+## 2026-04-22 — View 중심 콘솔 구조로 전환
+
+### 결정 사항
+
+**메인 실행 흐름**
+- `MainController` 중심 루프를 제거하고 `MainView`가 애플리케이션 진입 루프를 담당
+- `LxpApplication`은 `new AppConfig().mainView().run()`으로 시작
+
+**View 중심 메뉴 구조**
+- `MainView`, `CourseView`, `InstructorView`, `CourseListView`, `InstructorListView` 추가
+- 각 View가 자신의 `printMenu()` / `printList()`와 입력 루프를 직접 관리
+- 컨트롤러는 상세 구현 없이 호출 지점만 제공하는 형태로 축소
+  - `CourseController`: `register()`, `findAll()`, `findById()`
+  - `InstructorController`: `register()`, `findAll()`, `findById()`
+
+**command 패키지 위치 조정**
+- 메뉴 선택 enum은 Controller 책임이 아니라 View 책임으로 판단
+- `MainCommand`, `CourseCommand`, `InstructorCommand`, `ListCommand`를 `view/command`로 이동
+- 공통 메뉴 출력을 위해 `MenuCommand` 인터페이스 추가
+
+**출력 구조 정리**
+- `OutputView`는 화면 출력을 `header` / `body` / `menu`로 분리
+- 메뉴 문구는 하드코딩 문자열이 아니라 command enum의 `value`, `label`을 기반으로 동적 생성
+- 리스트 화면의 `선택`은 prefix를 받아 `강의 선택`, `강사 선택`으로 출력
+
+**InputView / OutputView 유틸화**
+- 두 클래스는 `view` 패키지 공용 util 성격으로 사용
+- 클래스 접근제어자는 package-private으로 변경
+- 메서드는 모두 `static`으로 전환
+- `AppConfig`는 더 이상 `InputView`, `OutputView` 인스턴스를 생성하거나 주입하지 않음
+
+**중복 제거 방식 조정**
+- `Abstract` 상속 기반 공통화 대신 Strategy 패턴 선택
+- `MenuRunner`가 공통 루프(`while`, `try-catch`, 공통 출력)를 담당
+- 각 View는 `MenuStrategy`를 구현해 화면별 제목, 본문, command 파싱, 처리 로직만 제공
+
+**목록 화면 입력 흐름 정리**
+- `CourseListView`, `InstructorListView`도 다른 메뉴 화면과 동일하게 반복 입력 루프를 사용
+- 오입력 시 현재 목록 화면에 머물며 재입력 가능
+
+### 영향 범위
+- `LxpApplication.java` — `mainController()` → `mainView()` 진입점 변경
+- `AppConfig.java` — View 조립 중심으로 재구성, 입출력 유틸 주입 제거
+- `MainController.java` 삭제
+- `CourseController.java`, `InstructorController.java` — placeholder 메서드만 남기는 형태로 단순화
+- `InputView.java`, `OutputView.java` — package-private static util 형태로 전환
+- `MainView.java`, `CourseView.java`, `InstructorView.java`, `CourseListView.java`, `InstructorListView.java` — 메뉴/리스트 루프와 컨트롤러 호출 연결
+- `view/command/*` — 메뉴 enum 및 `MenuCommand` 추가
+- `MenuRunner.java`, `MenuStrategy.java` — 공통 메뉴 실행 전략 추가
+
+---
+
 ## 2026-04-22 — 도메인 테스트 작성 및 테스트 컨벤션 확립
 
 ### 결정 사항
