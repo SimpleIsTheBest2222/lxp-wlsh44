@@ -36,12 +36,14 @@ public class Content {
 	public static Content createWithId(Long id, Long courseId, String title, String body,
 		ContentType contentType, int seq) {
 		Content content = new Content();
+
 		content.id = validateId(id);
 		content.courseId = validateCourseId(courseId);
 		content.title = validateTitle(title);
 		content.body = validateBody(body);
 		content.contentType = validateContentType(contentType);
 		content.seq = seq;
+
 		return content;
 	}
 
