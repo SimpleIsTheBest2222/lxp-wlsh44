@@ -21,7 +21,6 @@ class OutputView {
 			%s
 			%s%s%s
 			%s
-			
 			""", LINE_D, CYAN, alignTitle(title), RESET, LINE_D);
 	}
 
@@ -38,9 +37,11 @@ class OutputView {
 
 	static void printMenu(MenuCommand[] commands, String selectLabelPrefix) {
 		System.out.println(LINE_S);
+		System.out.println();
 		for (MenuCommand command : commands) {
 			System.out.println(formatMenuLine(command, selectLabelPrefix));
 		}
+		System.out.println();
 		System.out.println(LINE_S);
 	}
 

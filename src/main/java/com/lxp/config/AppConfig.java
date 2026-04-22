@@ -17,7 +17,8 @@ public class AppConfig {
 	private final CourseListView courseListView = new CourseListView(menuRunner, courseController);
 	private final InstructorListView instructorListView = new InstructorListView(menuRunner, instructorController);
 	private final CourseView courseView = new CourseView(menuRunner, courseController, courseListView);
-	private final InstructorView instructorView = new InstructorView(menuRunner, instructorController, instructorListView);
+	private final InstructorView instructorView = new InstructorView(menuRunner, instructorController,
+		instructorListView);
 	private final MainView mainView = new MainView(menuRunner, courseView, instructorView);
 
 	public MainView mainView() {
