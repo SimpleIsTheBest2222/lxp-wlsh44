@@ -10,7 +10,10 @@ $ARGUMENTS 로 개발할 도메인/기능을 파악한다.
 
 ### 1. 이슈 생성
 ```bash
-gh issue create --template "{✨-feature.md|♻️-refactor.md|🐛-fix.md}"
+# 아래 3개 중 하나를 선택해서 실행
+gh issue create --template "✨-feature.md"
+gh issue create --template "♻️-refactor.md"
+gh issue create --template "🐛-fix.md"
 ```
 → 이슈 번호 기억 (브랜치·PR에 사용)
 
