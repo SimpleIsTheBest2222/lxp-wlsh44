@@ -42,7 +42,7 @@ src/test/java/   — test code
 
 ## 패키지 구조
 
-```
+```text
 com.lxp/
 ├── LxpApplication.java
 ├── common/
