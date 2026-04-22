@@ -45,7 +45,6 @@ public class InstructorSelectView implements MenuStrategy<InstructorSelectComman
 	private String createBody(InstructorListResponse response) {
 		String baseBody = """
 			%s
-			
 			%s
 			""";
 		if (response.isEmpty()) {

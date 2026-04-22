@@ -57,9 +57,9 @@ public class InstructorDetailView implements MenuStrategy<InstructorDetailComman
 
 	private String createBody(InstructorDetailResponse response) {
 		return """
-			  강사 id  : %d
-			  이름     : %s
-			  소개     : %s
+				강사 id  : %d
+				이름     : %s
+				소개     : %s
 			""".formatted(
 			response.id(),
 			response.name(),
