@@ -1,5 +1,33 @@
 # HISTORY
 
+## 2026-04-22 — 콘솔 입출력 인스턴스 주입 및 View 단위 테스트 추가
+
+### 결정 사항
+
+**입출력 공용 인스턴스화**
+- `InputView`, `OutputView`를 static util 대신 공용 인스턴스로 사용하도록 변경
+- `AppConfig`에서 `Scanner`, `InputView`, `OutputView`를 한 번 생성하고 같은 인스턴스를 각 View와 `MenuRenderer`에 주입
+- 이후 등록/상세/수정 화면에서도 동일한 입출력 인스턴스를 재사용하는 방향으로 정리
+
+**MenuRenderer 의존성 변경**
+- `MenuRenderer`는 정적 `InputView`/`OutputView` 호출 대신 주입받은 인스턴스를 사용
+- View 내부의 안내 문구 출력과 muted 본문 생성도 `OutputView` 인스턴스를 통해 처리
+
+**테스트 전략 조정**
+- `MockedStatic` 기반 검증 대신 일반 Mockito mock 주입 방식으로 전환
+- `@ExtendWith(MockitoExtension.class)`와 `@Mock`, `@InjectMocks`를 사용해 중복을 줄임
+- 콘솔 출력 문자열 자체보다 올바른 출력 메서드 호출과 화면 전환 호출 여부를 검증
+
+### 영향 범위
+- `InputView.java`, `OutputView.java` — 인스턴스 기반 공용 컴포넌트로 전환
+- `MenuRenderer.java` — `InputView`, `OutputView` 주입 사용
+- `AppConfig.java` — `Scanner`, `InputView`, `OutputView` 생성 및 공유 주입
+- `CourseView.java`, `CourseListView.java`, `InstructorView.java`, `InstructorListView.java` — `OutputView` 의존성 추가
+- `build.gradle` — Mockito 테스트 의존성 추가
+- `src/test/java/com/lxp/view/*` — `MenuRenderer`, `CourseView`, `InstructorListView` 단위 테스트 추가
+
+---
+
 ## 2026-04-22 — 콘솔 메뉴 아키텍처 규칙 정리
 
 ### 결정 사항
