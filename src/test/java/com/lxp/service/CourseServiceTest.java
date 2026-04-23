@@ -20,6 +20,8 @@ import com.lxp.domain.Course;
 import com.lxp.domain.Instructor;
 import com.lxp.domain.enums.ContentType;
 import com.lxp.domain.enums.Level;
+import com.lxp.exception.ErrorCode;
+import com.lxp.exception.LxpException;
 import com.lxp.repository.ContentRepository;
 import com.lxp.repository.CourseRepository;
 import com.lxp.repository.InstructorRepository;
@@ -64,7 +66,8 @@ class CourseServiceTest {
 				null
 			);
 		});
-		when(instructorRepository.findById(1L)).thenReturn(java.util.Optional.of(Instructor.createWithId(1L, "김남준", "소개")));
+		when(instructorRepository.findById(1L)).thenReturn(
+			java.util.Optional.of(Instructor.createWithId(1L, "김남준", "소개")));
 
 		Course response = courseService.register(request);
 
@@ -114,7 +117,8 @@ class CourseServiceTest {
 				null
 			);
 		});
-		when(instructorRepository.findById(1L)).thenReturn(java.util.Optional.of(Instructor.createWithId(1L, "김남준", "소개")));
+		when(instructorRepository.findById(1L)).thenReturn(
+			java.util.Optional.of(Instructor.createWithId(1L, "김남준", "소개")));
 		when(contentRepository.save(any())).thenThrow(new RuntimeException("save failed"));
 
 		assertThatThrownBy(() -> courseService.register(request))
@@ -131,13 +135,52 @@ class CourseServiceTest {
 			"기초 문법",
 			10000,
 			"LOW",
-			List.of()
+			List.of(new ContentRegisterRequest("원시타입", "설명"))
 		);
 		when(instructorRepository.findById(99L)).thenReturn(java.util.Optional.empty());
 
 		assertThatThrownBy(() -> courseService.register(request))
-			.isInstanceOf(com.lxp.exception.LxpException.class)
-			.hasMessage(com.lxp.exception.ErrorCode.NOT_FOUND_INSTRUCTOR.getMessage());
+			.isInstanceOf(LxpException.class)
+			.hasMessage(ErrorCode.NOT_FOUND_INSTRUCTOR.getMessage());
 		verifyNoInteractions(courseRepository, contentRepository);
+	}
+
+	@Test
+	@DisplayName("실패 - 콘텐츠가 0개면 예외가 발생한다")
+	void register_failWhenContentCountIsZero() {
+		CourseRegisterRequest request = new CourseRegisterRequest(
+			1L,
+			"Java 입문",
+			"기초 문법",
+			10000,
+			"LOW",
+			List.of()
+		);
+
+		assertThatThrownBy(() -> courseService.register(request))
+			.isInstanceOf(LxpException.class)
+			.hasMessage(ErrorCode.COURSE_CONTENT_COUNT_OUT_OF_RANGE.getMessage());
+		verifyNoInteractions(instructorRepository, courseRepository, contentRepository);
+	}
+
+	@Test
+	@DisplayName("실패 - 콘텐츠가 10개를 초과하면 예외가 발생한다")
+	void register_failWhenContentCountExceedsTen() {
+		List<ContentRegisterRequest> contents = java.util.stream.IntStream.rangeClosed(1, 11)
+			.mapToObj(index -> new ContentRegisterRequest("콘텐츠 " + index, "설명 " + index))
+			.toList();
+		CourseRegisterRequest request = new CourseRegisterRequest(
+			1L,
+			"Java 입문",
+			"기초 문법",
+			10000,
+			"LOW",
+			contents
+		);
+
+		assertThatThrownBy(() -> courseService.register(request))
+			.isInstanceOf(LxpException.class)
+			.hasMessage(ErrorCode.COURSE_CONTENT_COUNT_OUT_OF_RANGE.getMessage());
+		verifyNoInteractions(instructorRepository, courseRepository, contentRepository);
 	}
 }

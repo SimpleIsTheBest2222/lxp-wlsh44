@@ -20,6 +20,7 @@ public class CourseService {
 	private final InstructorRepository instructorRepository;
 
 	public Course register(CourseRegisterRequest request) {
+		validateContentCount(request);
 		Long instructorId = instructorRepository.findById(request.instructorId())
 			.orElseThrow(() -> new LxpException(ErrorCode.NOT_FOUND_INSTRUCTOR))
 			.getId();
@@ -33,6 +34,13 @@ public class CourseService {
 		Course savedCourse = courseRepository.save(course);
 		saveContents(savedCourse.getId(), request);
 		return savedCourse;
+	}
+
+	private void validateContentCount(CourseRegisterRequest request) {
+		int contentCount = request.contents().size();
+		if (contentCount < 1 || contentCount > 10) {
+			throw new LxpException(ErrorCode.COURSE_CONTENT_COUNT_OUT_OF_RANGE);
+		}
 	}
 
 	private void saveContents(Long courseId, CourseRegisterRequest request) {
