@@ -79,4 +79,33 @@ class CourseServiceTest {
 		assertThat(contentCaptor.getValue().getContentType()).isEqualTo(ContentType.TEXT);
 		assertThat(contentCaptor.getValue().getSeq()).isEqualTo(1);
 	}
+
+	@Test
+	@DisplayName("실패 - 콘텐츠 저장 중 예외가 발생하면 예외를 전파한다")
+	void register_failWhenContentSaveThrows() {
+		CourseRegisterRequest request = new CourseRegisterRequest(
+			"Java 입문",
+			"기초 문법",
+			10000,
+			"LOW",
+			List.of(new ContentRegisterRequest("원시타입", "설명", 1))
+		);
+		when(courseRepository.save(any())).thenAnswer(invocation -> {
+			Course saved = invocation.getArgument(0);
+			return Course.createWithId(
+				1L,
+				saved.getTitle(),
+				saved.getDescription(),
+				saved.getPrice(),
+				saved.getLevel(),
+				null,
+				null
+			);
+		});
+		when(contentRepository.save(any())).thenThrow(new RuntimeException("save failed"));
+
+		assertThatThrownBy(() -> courseService.register(request))
+			.isInstanceOf(RuntimeException.class)
+			.hasMessage("save failed");
+	}
 }

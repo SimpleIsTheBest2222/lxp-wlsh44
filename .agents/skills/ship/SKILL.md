@@ -27,9 +27,10 @@ git push origin $(git branch --show-current)
 If using GitHub CLI:
 
 ```bash
-gh pr create --title "[{feat|refactor|fix}] {기능 요약}" --base main
+gh pr create --title "[{feat|refactor|fix}] {기능 요약}" --base <target-branch>
 ```
 
+Use the correct stacked/base branch instead of hard-coding `main`.
 Include `Closes #{issueNumber}` in the PR body when applicable.
 
 ## After Merge

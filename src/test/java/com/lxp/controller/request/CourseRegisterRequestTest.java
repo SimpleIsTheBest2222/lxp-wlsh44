@@ -43,7 +43,21 @@ class CourseRegisterRequestTest {
 		);
 
 		assertThat(request.contents()).hasSize(1);
-		assertThat(request.contents().getFirst().title()).isEqualTo("원시타입");
+		assertThat(request.contents().get(0).title()).isEqualTo("원시타입");
+	}
+
+	@Test
+	@DisplayName("실패 - 콘텐츠 목록이 null이면 예외가 발생한다")
+	void create_nullContents() {
+		assertThatThrownBy(() -> new CourseRegisterRequest(
+			"Java 입문",
+			"기초 문법",
+			10000,
+			"LOW",
+			null
+		))
+			.isInstanceOf(LxpException.class)
+			.hasMessage(ErrorCode.INVALID_INPUT.getMessage());
 	}
 
 	@Test

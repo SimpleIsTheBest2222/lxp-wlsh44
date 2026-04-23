@@ -13,5 +13,8 @@ public interface CourseRepository {
 
 	Course save(Course course);
 
+	/**
+	 * 강의를 soft delete 처리한다.
+	 */
 	void deleteById(Long id);
 }

@@ -41,6 +41,7 @@ public class InMemoryContentRepository implements ContentRepository {
 		}
 
 		ContentEntity existingContent = Optional.ofNullable(data.get(content.getId()))
+			.filter(savedContent -> !savedContent.isDeleted())
 			.orElseThrow(() -> new LxpException(ErrorCode.NOT_FOUND_CONTENT));
 
 		return saveExisting(content, existingContent, now);

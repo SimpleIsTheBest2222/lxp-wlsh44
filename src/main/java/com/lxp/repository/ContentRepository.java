@@ -13,5 +13,8 @@ public interface ContentRepository {
 
 	Content save(Content content);
 
+	/**
+	 * 콘텐츠를 soft delete 처리한다.
+	 */
 	void deleteById(Long id);
 }

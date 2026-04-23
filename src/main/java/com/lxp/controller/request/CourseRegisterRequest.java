@@ -33,6 +33,7 @@ public record CourseRegisterRequest(
 		Assert.notEmpty(description, ErrorCode.INVALID_INPUT);
 		Assert.isTrue(price >= 0, ErrorCode.INVALID_INPUT);
 		Assert.notNull(level, ErrorCode.INVALID_INPUT);
+		Assert.notNull(contents, ErrorCode.INVALID_INPUT);
 		contents = List.copyOf(contents);
 	}
 }

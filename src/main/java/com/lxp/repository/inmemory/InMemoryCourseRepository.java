@@ -41,6 +41,7 @@ public class InMemoryCourseRepository implements CourseRepository {
 		}
 
 		CourseEntity existingCourse = Optional.ofNullable(data.get(course.getId()))
+			.filter(savedCourse -> !savedCourse.isDeleted())
 			.orElseThrow(() -> new LxpException(ErrorCode.NOT_FOUND_COURSE));
 
 		return saveExisting(course, existingCourse, now);
