@@ -27,26 +27,27 @@ public class InstructorService {
 	}
 
 	public Instructor findById(Long id) {
-		return instructorRepository.findById(id)
-			.orElseThrow(() -> new LxpException(ErrorCode.NOT_FOUND_INSTRUCTOR));
+		return getInstructorOrThrow(id);
 	}
 
 	public Instructor findDetailById(Long id) {
-		return instructorRepository.findById(id)
-			.orElseThrow(() -> new LxpException(ErrorCode.NOT_FOUND_INSTRUCTOR));
+		return getInstructorOrThrow(id);
 	}
 
 	public Instructor update(InstructorUpdateRequest request) {
-		Instructor instructor = instructorRepository.findById(request.id())
-			.orElseThrow(() -> new LxpException(ErrorCode.NOT_FOUND_INSTRUCTOR));
+		Instructor instructor = getInstructorOrThrow(request.id());
 		instructor.update(request.name(), request.introduction());
 		return instructorRepository.save(instructor);
 	}
 
 	public Instructor delete(InstructorDeleteRequest request) {
-		Instructor instructor = instructorRepository.findById(request.id())
-			.orElseThrow(() -> new LxpException(ErrorCode.NOT_FOUND_INSTRUCTOR));
+		Instructor instructor = getInstructorOrThrow(request.id());
 		instructorRepository.deleteById(request.id());
 		return instructor;
+	}
+
+	private Instructor getInstructorOrThrow(Long id) {
+		return instructorRepository.findById(id)
+			.orElseThrow(() -> new LxpException(ErrorCode.NOT_FOUND_INSTRUCTOR));
 	}
 }

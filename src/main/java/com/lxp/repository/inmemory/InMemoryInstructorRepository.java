@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.lxp.domain.Instructor;
+import com.lxp.exception.ErrorCode;
+import com.lxp.exception.LxpException;
 import com.lxp.repository.InstructorRepository;
 import com.lxp.repository.entity.InstructorEntity;
 
@@ -38,22 +40,14 @@ public class InMemoryInstructorRepository implements InstructorRepository {
 			return saveNew(instructor, now);
 		}
 
-		InstructorEntity existingInstructor = data.get(instructor.getId());
-		if (existingInstructor == null) {
-			return saveWithId(instructor, now);
-		}
+		InstructorEntity existingInstructor = Optional.ofNullable(data.get(instructor.getId()))
+			.orElseThrow(() -> new LxpException(ErrorCode.NOT_FOUND_INSTRUCTOR));
 
 		return saveExisting(instructor, existingInstructor, now);
 	}
 
 	private Instructor saveNew(Instructor instructor, LocalDateTime now) {
 		InstructorEntity savedInstructor = InstructorEntity.create(nextId++, instructor, now);
-		data.put(savedInstructor.getId(), savedInstructor);
-		return savedInstructor.toDomain();
-	}
-
-	private Instructor saveWithId(Instructor instructor, LocalDateTime now) {
-		InstructorEntity savedInstructor = InstructorEntity.create(instructor.getId(), instructor, now);
 		data.put(savedInstructor.getId(), savedInstructor);
 		return savedInstructor.toDomain();
 	}

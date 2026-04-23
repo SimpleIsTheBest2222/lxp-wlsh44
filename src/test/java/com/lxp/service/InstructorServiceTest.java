@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,14 +37,22 @@ class InstructorServiceTest {
 	void register() {
 		// given
 		InstructorRegisterRequest request = new InstructorRegisterRequest("김남준", "자바 강사");
-		when(instructorRepository.save(any())).thenReturn(Instructor.createWithId(1L, "김남준", "자바 강사"));
+		when(instructorRepository.save(any())).thenAnswer(invocation -> {
+			Instructor saved = invocation.getArgument(0);
+			return Instructor.createWithId(1L, saved.getName(), saved.getIntroduction());
+		});
 
 		// when
 		Instructor response = instructorService.register(request);
 
 		// then
+		ArgumentCaptor<Instructor> captor = ArgumentCaptor.forClass(Instructor.class);
 		assertThat(response.getId()).isEqualTo(1L);
-		verify(instructorRepository).save(any());
+		assertThat(response.getName()).isEqualTo("김남준");
+		assertThat(response.getIntroduction()).isEqualTo("자바 강사");
+		verify(instructorRepository).save(captor.capture());
+		assertThat(captor.getValue().getName()).isEqualTo("김남준");
+		assertThat(captor.getValue().getIntroduction()).isEqualTo("자바 강사");
 	}
 
 	@Test
@@ -116,15 +125,19 @@ class InstructorServiceTest {
 		InstructorUpdateRequest request = new InstructorUpdateRequest(1L, "김남준 교수", "스프링 강사");
 		Instructor instructor = Instructor.createWithId(1L, "김남준", "자바 강사");
 		when(instructorRepository.findById(1L)).thenReturn(Optional.of(instructor));
-		when(instructorRepository.save(instructor)).thenReturn(Instructor.createWithId(1L, "김남준 교수", "스프링 강사"));
+		when(instructorRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// when
 		Instructor response = instructorService.update(request);
 
 		// then
+		ArgumentCaptor<Instructor> captor = ArgumentCaptor.forClass(Instructor.class);
 		assertThat(response.getId()).isEqualTo(1L);
 		assertThat(response.getName()).isEqualTo("김남준 교수");
-		verify(instructorRepository).save(instructor);
+		assertThat(response.getIntroduction()).isEqualTo("스프링 강사");
+		verify(instructorRepository).save(captor.capture());
+		assertThat(captor.getValue().getName()).isEqualTo("김남준 교수");
+		assertThat(captor.getValue().getIntroduction()).isEqualTo("스프링 강사");
 	}
 
 	@Test
