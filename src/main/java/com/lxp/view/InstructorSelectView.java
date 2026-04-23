@@ -1,7 +1,7 @@
 package com.lxp.view;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.lxp.controller.InstructorController;
 import com.lxp.controller.response.InstructorListResponse;
@@ -43,10 +43,7 @@ public class InstructorSelectView implements MenuStrategy<InstructorSelectComman
 	}
 
 	private String createBody(InstructorListResponse response) {
-		String baseBody = """
-			%s
-			%s
-			""";
+		String baseBody = "%s%n%s";
 		if (response.isEmpty()) {
 			return baseBody.formatted(
 				outputView.muted("  등록된 강사가 없습니다."),
@@ -54,10 +51,14 @@ public class InstructorSelectView implements MenuStrategy<InstructorSelectComman
 			);
 		}
 		return baseBody.formatted(
-			response.instructors().stream()
-				.map(instructor -> "  %d. %s (id: %d)"
-					.formatted(instructor.id(), instructor.name(), instructor.id()))
-				.collect(Collectors.joining(System.lineSeparator())),
+			IntStream.range(0, response.instructors().size())
+				.mapToObj(index -> "  %d. %s (id: %d)".formatted(
+					index + 1,
+					response.instructors().get(index).name(),
+					response.instructors().get(index).id()
+				))
+				.reduce((left, right) -> left + System.lineSeparator() + right)
+				.orElse(""),
 			outputView.muted("  선택할 강사 id를 입력하세요. (0: 뒤로 가기)")
 		);
 	}

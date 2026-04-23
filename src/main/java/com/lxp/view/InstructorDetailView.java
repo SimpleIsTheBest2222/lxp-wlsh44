@@ -71,7 +71,7 @@ public class InstructorDetailView implements MenuStrategy<InstructorDetailComman
 		outputView.printHeader("강사 수정");
 		outputView.printBody("  빈 값 입력 시 기존 값이 유지됩니다.");
 		outputView.printSectionLine();
-		System.out.println();
+		outputView.printEmptyLine();
 
 		outputView.printLabel("  이름    : ");
 		String name = inputView.readLine();
@@ -79,7 +79,7 @@ public class InstructorDetailView implements MenuStrategy<InstructorDetailComman
 		outputView.printLabel("  소개    : ");
 		String introduction = inputView.readLine();
 
-		System.out.println();
+		outputView.printEmptyLine();
 		outputView.printSectionLine();
 
 		InstructorUpdateRequest request = new InstructorUpdateRequest(instructorId, name, introduction);

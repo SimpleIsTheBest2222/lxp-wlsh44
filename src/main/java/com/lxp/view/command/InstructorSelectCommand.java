@@ -1,5 +1,8 @@
 package com.lxp.view.command;
 
+import com.lxp.exception.ErrorCode;
+import com.lxp.exception.LxpException;
+
 public class InstructorSelectCommand implements MenuCommand {
 
 	private final int input;
@@ -9,6 +12,9 @@ public class InstructorSelectCommand implements MenuCommand {
 	}
 
 	public static InstructorSelectCommand from(int input) {
+		if (input < 0) {
+			throw new LxpException(ErrorCode.INVALID_INPUT);
+		}
 		return new InstructorSelectCommand(input);
 	}
 

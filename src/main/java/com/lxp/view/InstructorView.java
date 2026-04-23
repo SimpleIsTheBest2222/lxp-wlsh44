@@ -58,7 +58,7 @@ public class InstructorView implements MenuStrategy<InstructorCommand> {
 		outputView.printLabel("  소개  : ");
 		String introduction = inputView.readLine();
 
-		System.out.println();
+		outputView.printEmptyLine();
 		outputView.printSectionLine();
 
 		InstructorRegisterRequest request = new InstructorRegisterRequest(name, introduction);

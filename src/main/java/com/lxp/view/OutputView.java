@@ -49,6 +49,10 @@ public class OutputView {
 		System.out.println(LINE_S);
 	}
 
+	public void printEmptyLine() {
+		System.out.println();
+	}
+
 	public void printLabel(String label) {
 		System.out.print(label);
 	}
