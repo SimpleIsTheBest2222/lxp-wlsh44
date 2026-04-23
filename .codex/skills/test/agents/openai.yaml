@@ -1,0 +1,4 @@
+interface:
+  display_name: "Test"
+  short_description: "Write and verify repo-specific LMS tests"
+  default_prompt: "Use $test to add or update tests for this LMS console admin repo."

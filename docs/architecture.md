@@ -14,6 +14,11 @@
 - `view`는 여러 컨트롤러 결과를 다시 조합하거나 도메인 객체를 직접 해석하지 않는다.
 - 예: `CourseDetailResponse`, `InstructorListResponse`
 
+### 2-1. Service는 도메인 경계를 유지한다
+- `service`는 controller request를 입력으로 받을 수는 있지만 반환값은 도메인 객체 또는 도메인 컬렉션으로 유지한다.
+- controller가 service 결과를 화면용 response DTO로 변환한다.
+- service가 response DTO를 직접 만들기 시작하면 화면 표현 관심사가 service로 스며들기 때문에 지양한다.
+
 ### 3. View의 handle()은 흐름 제어만 담당한다
 - 허용:
   - 입력값 파싱 결과 분기
@@ -42,11 +47,18 @@
 - `MenuScreen`: 메뉴 화면 출력 데이터
 - `view`: 화면 진입, 출력 포맷, 사용자 입력 흐름
 - `controller`: 화면에 필요한 데이터 준비 및 기능 진입점
+- `service`: 도메인 흐름 조립 및 예외 처리
+- `repository`: 도메인 저장 계약
+- `repository.entity`: 저장소 구현 내부의 영속성 모델
+- `config`: 계층별 수동 DI 조립
 
 ## 유지 규칙
 
 - `view`는 도메인 객체 대신 DTO를 다룬다.
 - `controller`는 출력 문자열을 만들지 않는다.
+- `controller`는 response DTO 변환 책임을 가진다.
+- `service`는 response DTO를 반환하지 않는다.
 - 공통화보다 의미 보존을 우선한다.
 - 메뉴 구조가 커져도 `MenuRenderer`에는 화면별 조건문을 넣지 않는다.
 - 화면 복잡도가 커지면 `MenuScreen`을 먼저 확장하고, `view` 안의 문자열 조합을 무한정 늘리지 않는다.
+- 저장소 구현은 entity와 soft delete 정책을 내부에 숨기고, 외부에는 도메인 객체만 노출한다.
