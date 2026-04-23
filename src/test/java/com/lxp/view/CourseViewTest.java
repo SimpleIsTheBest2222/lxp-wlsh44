@@ -63,7 +63,7 @@ class CourseViewTest {
 		verify(outputView).printBody("  강의 정보를 입력하세요.");
 		verify(outputView).printLabel("  강의 제목    : ");
 		verify(outputView).printLabel("  가격         : ");
-		verify(outputView).printLabel("  난이도       : ");
+		verify(outputView).printLabel("  난이도(LOW/MIDDLE/HIGH)   : ");
 		verify(outputView).printLabel("  강의 설명    : ");
 		verify(outputView).printBody("  콘텐츠를 추가하세요. (제목에 0 입력 시 완료)");
 		verify(outputView, times(2)).printLabel("  콘텐츠 제목  : ");
