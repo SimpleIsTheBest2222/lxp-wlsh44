@@ -1,9 +1,13 @@
 package com.lxp.service;
 
+import java.util.Comparator;
+import java.util.List;
+
 import com.lxp.controller.request.ContentRegisterRequest;
 import com.lxp.controller.request.CourseRegisterRequest;
 import com.lxp.domain.Content;
 import com.lxp.domain.Course;
+import com.lxp.domain.Instructor;
 import com.lxp.exception.ErrorCode;
 import com.lxp.exception.LxpException;
 import com.lxp.repository.ContentRepository;
@@ -34,6 +38,28 @@ public class CourseService {
 		Course savedCourse = courseRepository.save(course);
 		saveContents(savedCourse.getId(), request);
 		return savedCourse;
+	}
+
+	public List<Course> findAll() {
+		return courseRepository.findAll();
+	}
+
+	public Course findDetailById(Long id) {
+		return courseRepository.findById(id)
+			.orElseThrow(() -> new LxpException(ErrorCode.NOT_FOUND_COURSE));
+	}
+
+	public Instructor findInstructorById(Long id) {
+		return instructorRepository.findById(id)
+			.orElseThrow(() -> new LxpException(ErrorCode.NOT_FOUND_INSTRUCTOR));
+	}
+
+	public List<Content> findContentsByCourseId(Long courseId) {
+		findDetailById(courseId);
+		return contentRepository.findAll().stream()
+			.filter(content -> content.getCourseId().equals(courseId))
+			.sorted(Comparator.comparingInt(Content::getSeq))
+			.toList();
 	}
 
 	private void validateContentCount(CourseRegisterRequest request) {

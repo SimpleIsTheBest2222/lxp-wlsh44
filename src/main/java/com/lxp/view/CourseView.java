@@ -39,7 +39,6 @@ public class CourseView implements MenuStrategy<CourseCommand> {
 		switch (command) {
 			case REGISTER -> registerCourse();
 			case LIST -> {
-				courseController.findAll();
 				courseListView.run();
 			}
 			case BACK -> {

@@ -2,7 +2,9 @@ package com.lxp.config;
 
 import java.util.Scanner;
 
+import com.lxp.view.CourseDetailView;
 import com.lxp.view.CourseListView;
+import com.lxp.view.CourseSelectView;
 import com.lxp.view.CourseView;
 import com.lxp.view.InputView;
 import com.lxp.view.InstructorDetailView;
@@ -24,6 +26,8 @@ public class ViewConfig {
 
 	private final InstructorDetailView instructorDetailView;
 	private final InstructorSelectView instructorSelectView;
+	private final CourseDetailView courseDetailView;
+	private final CourseSelectView courseSelectView;
 	private final CourseListView courseListView;
 	private final InstructorListView instructorListView;
 	private final CourseView courseView;
@@ -44,10 +48,22 @@ public class ViewConfig {
 			this.controllerConfig.instructorController(),
 			instructorDetailView
 		);
-		this.courseListView = new CourseListView(
+		this.courseDetailView = new CourseDetailView(
 			menuRenderer,
 			outputView,
 			this.controllerConfig.courseController()
+		);
+		this.courseSelectView = new CourseSelectView(
+			menuRenderer,
+			outputView,
+			this.controllerConfig.courseController(),
+			courseDetailView
+		);
+		this.courseListView = new CourseListView(
+			menuRenderer,
+			outputView,
+			this.controllerConfig.courseController(),
+			courseSelectView
 		);
 		this.instructorListView = new InstructorListView(
 			menuRenderer,
