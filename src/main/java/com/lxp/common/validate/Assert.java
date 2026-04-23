@@ -17,10 +17,23 @@ public final class Assert {
 		}
 	}
 
+	public static void notNull(Object obj, ErrorCode errorCode) {
+		if (obj == null) {
+			throw new LxpException(errorCode);
+		}
+	}
+
 	public static void notEmpty(String value) {
 		notNull(value);
 		if (value.isBlank()) {
 			throw new LxpException(INVALID_INPUT);
+		}
+	}
+
+	public static void notEmpty(String value, ErrorCode errorCode) {
+		notNull(value, errorCode);
+		if (value.isBlank()) {
+			throw new LxpException(errorCode);
 		}
 	}
 

@@ -25,4 +25,12 @@ class InstructorRegisterRequestTest {
 			.isInstanceOf(LxpException.class)
 			.hasMessage(ErrorCode.INVALID_INPUT.getMessage());
 	}
+
+	@Test
+	@DisplayName("실패 - 이름이 null이면 예외가 발생한다")
+	void create_nullName() {
+		assertThatThrownBy(() -> new InstructorRegisterRequest(null, "자바 강사"))
+			.isInstanceOf(LxpException.class)
+			.hasMessage(ErrorCode.INVALID_INPUT.getMessage());
+	}
 }
