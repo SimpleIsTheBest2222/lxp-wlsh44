@@ -72,7 +72,8 @@ public class CourseView implements MenuStrategy<CourseCommand> {
 		outputView.printSectionLine();
 
 		List<ContentRegisterRequest> contents = registerContents();
-		CourseRegisterRequest request = new CourseRegisterRequest(instructorId, title, description, price, level, contents);
+		CourseRegisterRequest request = new CourseRegisterRequest(instructorId, title, description, price, level,
+			contents);
 		CourseRegisterResponse response = courseController.register(request);
 
 		outputView.printSuccess("  강의가 등록되었습니다. id: " + response.id());

@@ -46,8 +46,8 @@ public class Course {
 		return createWithId(id, null, title, description, price, level, createdAt, modifiedAt);
 	}
 
-	public static Course createWithId(Long id, Long instructorId, String title, String description, int price, Level level,
-		LocalDateTime createdAt, LocalDateTime modifiedAt) {
+	public static Course createWithId(Long id, Long instructorId, String title, String description, int price,
+		Level level, LocalDateTime createdAt, LocalDateTime modifiedAt) {
 		Course course = new Course();
 
 		course.id = validateId(id);
