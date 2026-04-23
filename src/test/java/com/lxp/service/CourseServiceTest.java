@@ -273,6 +273,36 @@ class CourseServiceTest {
 	}
 
 	@Test
+	@DisplayName("성공 - 빈 값으로 강의를 수정하면 기존 값이 유지된다")
+	void update_keepExistingValuesWhenFieldsAreBlank() {
+		Course course = Course.createWithId(1L, 1L, "Java 입문", "기초 문법", 10000, Level.LOW, null, null);
+		CourseUpdateRequest request = new CourseUpdateRequest(1L, "", "  ", "", "");
+		when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+		when(courseRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+		Course response = courseService.update(request);
+
+		assertThat(response.getInstructorId()).isEqualTo(1L);
+		assertThat(response.getTitle()).isEqualTo("Java 입문");
+		assertThat(response.getDescription()).isEqualTo("기초 문법");
+		assertThat(response.getPrice()).isEqualTo(10000);
+		assertThat(response.getLevel()).isEqualTo(Level.LOW);
+		verify(courseRepository).save(course);
+	}
+
+	@Test
+	@DisplayName("실패 - 존재하지 않는 강의를 수정하면 예외가 발생한다")
+	void update_failWhenCourseNotFound() {
+		CourseUpdateRequest request = new CourseUpdateRequest(99L, "Java 심화", "심화 문법", "120000", "HIGH");
+		when(courseRepository.findById(99L)).thenReturn(Optional.empty());
+
+		assertThatThrownBy(() -> courseService.update(request))
+			.isInstanceOf(LxpException.class)
+			.hasMessage(ErrorCode.NOT_FOUND_COURSE.getMessage());
+		verify(courseRepository, never()).save(any());
+	}
+
+	@Test
 	@DisplayName("성공 - 강의를 삭제하면 소속 콘텐츠도 함께 삭제한다")
 	void delete() {
 		Course course = Course.createWithId(1L, 1L, "Java 입문", "기초 문법", 10000, Level.LOW, null, null);
@@ -290,6 +320,18 @@ class CourseServiceTest {
 		verify(contentRepository).deleteById(2L);
 		verify(contentRepository, never()).deleteById(3L);
 		verify(courseRepository).deleteById(1L);
+	}
+
+	@Test
+	@DisplayName("실패 - 존재하지 않는 강의를 삭제하면 예외가 발생한다")
+	void delete_failWhenCourseNotFound() {
+		when(courseRepository.findById(99L)).thenReturn(Optional.empty());
+
+		assertThatThrownBy(() -> courseService.delete(new CourseDeleteRequest(99L)))
+			.isInstanceOf(LxpException.class)
+			.hasMessage(ErrorCode.NOT_FOUND_COURSE.getMessage());
+		verifyNoInteractions(contentRepository);
+		verify(courseRepository, never()).deleteById(any());
 	}
 
 }

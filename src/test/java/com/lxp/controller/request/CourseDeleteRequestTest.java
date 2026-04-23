@@ -26,4 +26,12 @@ class CourseDeleteRequestTest {
 			.isInstanceOf(LxpException.class)
 			.hasMessage(ErrorCode.INVALID_INPUT.getMessage());
 	}
+
+	@Test
+	@DisplayName("실패 - id가 null이면 예외가 발생한다")
+	void create_nullId() {
+		assertThatThrownBy(() -> new CourseDeleteRequest(null))
+			.isInstanceOf(LxpException.class)
+			.hasMessage(ErrorCode.INVALID_INPUT.getMessage());
+	}
 }

@@ -39,4 +39,12 @@ class CourseUpdateRequestTest {
 			.isInstanceOf(LxpException.class)
 			.hasMessage(ErrorCode.INVALID_INPUT.getMessage());
 	}
+
+	@Test
+	@DisplayName("실패 - 난이도가 유효하지 않으면 예외가 발생한다")
+	void create_invalidLevel() {
+		assertThatThrownBy(() -> new CourseUpdateRequest(1L, "", "", "", "expert"))
+			.isInstanceOf(LxpException.class)
+			.hasMessage(ErrorCode.INVALID_LEVEL.getMessage());
+	}
 }
