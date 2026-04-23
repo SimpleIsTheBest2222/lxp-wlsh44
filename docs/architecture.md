@@ -17,7 +17,7 @@
 ### 2-1. Service는 도메인 경계를 유지한다
 - `service`는 controller request를 입력으로 받을 수는 있지만 반환값은 도메인 객체 또는 도메인 컬렉션으로 유지한다.
 - controller가 service 결과를 화면용 response DTO로 변환한다.
-- service가 response DTO를 직접 만들기 시작하면 화면 표현 관심사가 service로 새기기 때문에 지양한다.
+- service가 response DTO를 직접 만들기 시작하면 화면 표현 관심사가 service로 스며들기 때문에 지양한다.
 
 ### 3. View의 handle()은 흐름 제어만 담당한다
 - 허용:
