@@ -37,7 +37,7 @@ class CourseControllerTest {
 			"기초 문법",
 			10000,
 			"LOW",
-			List.of(new ContentRegisterRequest("원시타입", "설명", 1))
+			List.of(new ContentRegisterRequest("원시타입", "설명"))
 		);
 		when(courseService.register(request))
 			.thenReturn(Course.createWithId(1L, "Java 입문", "기초 문법", 10000, Level.LOW, null, null));

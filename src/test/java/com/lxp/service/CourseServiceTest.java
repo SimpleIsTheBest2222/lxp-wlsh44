@@ -43,7 +43,7 @@ class CourseServiceTest {
 			"기초 문법",
 			10000,
 			"LOW",
-			List.of(new ContentRegisterRequest("원시타입", "설명", 1))
+			List.of(new ContentRegisterRequest("원시타입", "설명"))
 		);
 		when(courseRepository.save(any())).thenAnswer(invocation -> {
 			Course saved = invocation.getArgument(0);
@@ -88,7 +88,7 @@ class CourseServiceTest {
 			"기초 문법",
 			10000,
 			"LOW",
-			List.of(new ContentRegisterRequest("원시타입", "설명", 1))
+			List.of(new ContentRegisterRequest("원시타입", "설명"))
 		);
 		when(courseRepository.save(any())).thenAnswer(invocation -> {
 			Course saved = invocation.getArgument(0);

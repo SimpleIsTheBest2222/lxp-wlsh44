@@ -39,7 +39,7 @@ class CourseRegisterRequestTest {
 			"기초 문법",
 			10000,
 			"LOW",
-			List.of(new ContentRegisterRequest("원시타입", "설명", 1))
+			List.of(new ContentRegisterRequest("원시타입", "설명"))
 		);
 
 		assertThat(request.contents()).hasSize(1);

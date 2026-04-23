@@ -51,7 +51,7 @@ class CourseViewTest {
 			"기초 문법",
 			10000,
 			"2",
-			List.of(new ContentRegisterRequest("원시타입", "설명", 1))
+			List.of(new ContentRegisterRequest("원시타입", "설명"))
 		)))
 			.thenReturn(new CourseRegisterResponse(3L));
 
@@ -73,7 +73,7 @@ class CourseViewTest {
 			"기초 문법",
 			10000,
 			"2",
-			List.of(new ContentRegisterRequest("원시타입", "설명", 1))
+			List.of(new ContentRegisterRequest("원시타입", "설명"))
 		));
 		verify(outputView).printSuccess("  강의가 등록되었습니다. id: 3");
 		verifyNoInteractions(courseListView);

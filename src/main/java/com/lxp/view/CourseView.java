@@ -59,7 +59,7 @@ public class CourseView implements MenuStrategy<CourseCommand> {
 		outputView.printLabel("  가격         : ");
 		int price = inputView.readInt();
 
-		outputView.printLabel("  난이도       : ");
+		outputView.printLabel("  난이도(LOW/MIDDLE/HIGH)   : ");
 		String level = inputView.readLine();
 
 		outputView.printLabel("  강의 설명    : ");
@@ -82,7 +82,6 @@ public class CourseView implements MenuStrategy<CourseCommand> {
 		outputView.printEmptyLine();
 
 		List<ContentRegisterRequest> contents = new ArrayList<>();
-		int seq = 1;
 		while (true) {
 			outputView.printLabel("  콘텐츠 제목  : ");
 			String title = inputView.readLine();
@@ -94,7 +93,7 @@ public class CourseView implements MenuStrategy<CourseCommand> {
 			String body = inputView.readLine();
 			outputView.printEmptyLine();
 
-			contents.add(new ContentRegisterRequest(title, body, seq++));
+			contents.add(new ContentRegisterRequest(title, body));
 		}
 		return contents;
 	}

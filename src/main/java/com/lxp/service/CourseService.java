@@ -23,13 +23,14 @@ public class CourseService {
 	}
 
 	private void saveContents(Long courseId, CourseRegisterRequest request) {
+		int seq = 1;
 		for (ContentRegisterRequest contentRequest : request.contents()) {
 			Content content = Content.create(
 				courseId,
 				contentRequest.title(),
 				contentRequest.body(),
 				contentRequest.contentType(),
-				contentRequest.seq()
+				seq++
 			);
 			contentRepository.save(content);
 		}
