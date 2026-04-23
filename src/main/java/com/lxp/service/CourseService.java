@@ -1,11 +1,11 @@
 package com.lxp.service;
 
-import com.lxp.controller.request.CourseRegisterRequest;
 import com.lxp.controller.request.ContentRegisterRequest;
+import com.lxp.controller.request.CourseRegisterRequest;
 import com.lxp.domain.Content;
 import com.lxp.domain.Course;
-import com.lxp.repository.CourseRepository;
 import com.lxp.repository.ContentRepository;
+import com.lxp.repository.CourseRepository;
 
 import lombok.RequiredArgsConstructor;
 

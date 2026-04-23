@@ -1,7 +1,7 @@
 package com.lxp.config;
 
-import com.lxp.controller.CourseController;
 import com.lxp.controller.ContentController;
+import com.lxp.controller.CourseController;
 import com.lxp.controller.InstructorController;
 
 public class ControllerConfig {

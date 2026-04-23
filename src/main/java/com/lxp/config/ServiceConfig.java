@@ -1,7 +1,7 @@
 package com.lxp.config;
 
-import com.lxp.service.CourseService;
 import com.lxp.service.ContentService;
+import com.lxp.service.CourseService;
 import com.lxp.service.InstructorService;
 
 public class ServiceConfig {

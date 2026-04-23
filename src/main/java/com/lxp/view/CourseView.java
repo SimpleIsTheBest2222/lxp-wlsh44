@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.lxp.controller.CourseController;
-import com.lxp.controller.request.CourseRegisterRequest;
 import com.lxp.controller.request.ContentRegisterRequest;
+import com.lxp.controller.request.CourseRegisterRequest;
 import com.lxp.controller.response.CourseRegisterResponse;
 import com.lxp.view.command.CourseCommand;
 
@@ -37,9 +37,7 @@ public class CourseView implements MenuStrategy<CourseCommand> {
 	@Override
 	public boolean handle(CourseCommand command) {
 		switch (command) {
-			case REGISTER -> {
-				registerCourse();
-			}
+			case REGISTER -> registerCourse();
 			case LIST -> {
 				courseController.findAll();
 				courseListView.run();

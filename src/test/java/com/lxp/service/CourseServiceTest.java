@@ -13,14 +13,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.lxp.controller.request.CourseRegisterRequest;
 import com.lxp.controller.request.ContentRegisterRequest;
+import com.lxp.controller.request.CourseRegisterRequest;
 import com.lxp.domain.Content;
 import com.lxp.domain.Course;
 import com.lxp.domain.enums.ContentType;
 import com.lxp.domain.enums.Level;
-import com.lxp.repository.CourseRepository;
 import com.lxp.repository.ContentRepository;
+import com.lxp.repository.CourseRepository;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("CourseService 테스트")

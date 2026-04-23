@@ -1,10 +1,10 @@
 package com.lxp.config;
 
-import com.lxp.repository.CourseRepository;
 import com.lxp.repository.ContentRepository;
+import com.lxp.repository.CourseRepository;
 import com.lxp.repository.InstructorRepository;
-import com.lxp.repository.inmemory.InMemoryCourseRepository;
 import com.lxp.repository.inmemory.InMemoryContentRepository;
+import com.lxp.repository.inmemory.InMemoryCourseRepository;
 import com.lxp.repository.inmemory.InMemoryInstructorRepository;
 
 public class RepositoryConfig {

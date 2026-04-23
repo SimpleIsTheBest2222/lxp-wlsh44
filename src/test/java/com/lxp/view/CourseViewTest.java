@@ -13,8 +13,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.lxp.controller.CourseController;
-import com.lxp.controller.request.CourseRegisterRequest;
 import com.lxp.controller.request.ContentRegisterRequest;
+import com.lxp.controller.request.CourseRegisterRequest;
 import com.lxp.controller.response.CourseRegisterResponse;
 import com.lxp.view.command.CourseCommand;
 
