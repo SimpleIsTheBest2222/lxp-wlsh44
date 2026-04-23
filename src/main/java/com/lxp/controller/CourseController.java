@@ -1,8 +1,15 @@
 package com.lxp.controller;
 
+import java.util.List;
+
 import com.lxp.controller.request.CourseRegisterRequest;
+import com.lxp.controller.response.ContentSummaryResponse;
+import com.lxp.controller.response.CourseDetailResponse;
+import com.lxp.controller.response.CourseListResponse;
 import com.lxp.controller.response.CourseRegisterResponse;
+import com.lxp.controller.response.CourseSummaryResponse;
 import com.lxp.domain.Course;
+import com.lxp.domain.Instructor;
 import com.lxp.service.CourseService;
 
 import lombok.RequiredArgsConstructor;
@@ -17,9 +24,35 @@ public class CourseController {
 		return new CourseRegisterResponse(course.getId());
 	}
 
-	public void findAll() { // not implemented
+	public CourseListResponse findAll() {
+		List<CourseSummaryResponse> courses = courseService.findAll().stream()
+			.map(course -> new CourseSummaryResponse(
+				course.getId(),
+				course.getTitle(),
+				courseService.findInstructorById(course.getInstructorId()).getName()
+			))
+			.toList();
+		return new CourseListResponse(courses);
 	}
 
-	public void findById() { // not implemented
+	public CourseDetailResponse findDetailById(Long id) {
+		Course course = courseService.findDetailById(id);
+		Instructor instructor = courseService.findInstructorById(course.getInstructorId());
+		List<ContentSummaryResponse> contents = courseService.findContentsByCourseId(id).stream()
+			.map(content -> new ContentSummaryResponse(content.getId(), content.getTitle()))
+			.toList();
+
+		return new CourseDetailResponse(
+			course.getId(),
+			course.getTitle(),
+			instructor.getName(),
+			instructor.getIntroduction(),
+			course.getPrice(),
+			course.getLevel().displayName(),
+			course.getDescription(),
+			contents,
+			course.getCreatedAt(),
+			course.getModifiedAt()
+		);
 	}
 }

@@ -3,7 +3,9 @@ package com.lxp.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -182,5 +184,69 @@ class CourseServiceTest {
 			.isInstanceOf(LxpException.class)
 			.hasMessage(ErrorCode.COURSE_CONTENT_COUNT_OUT_OF_RANGE.getMessage());
 		verifyNoInteractions(instructorRepository, courseRepository, contentRepository);
+	}
+
+	@Test
+	@DisplayName("성공 - 강의 목록을 조회한다")
+	void findAll() {
+		List<Course> courses = List.of(
+			Course.createWithId(1L, 1L, "Java 입문", "기초 문법", 10000, Level.LOW, null, null)
+		);
+		when(courseRepository.findAll()).thenReturn(courses);
+
+		List<Course> result = courseService.findAll();
+
+		assertThat(result).extracting(Course::getId, Course::getTitle)
+			.containsExactly(tuple(1L, "Java 입문"));
+	}
+
+	@Test
+	@DisplayName("성공 - 강의 상세를 조회한다")
+	void findDetailById() {
+		Course course = Course.createWithId(
+			1L,
+			1L,
+			"Java 입문",
+			"기초 문법",
+			10000,
+			Level.LOW,
+			LocalDateTime.of(2025, 3, 10, 0, 0),
+			LocalDateTime.of(2025, 4, 1, 0, 0)
+		);
+		when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+
+		Course result = courseService.findDetailById(1L);
+
+		assertThat(result.getId()).isEqualTo(1L);
+		assertThat(result.getTitle()).isEqualTo("Java 입문");
+	}
+
+	@Test
+	@DisplayName("성공 - 강의의 강사 정보를 조회한다")
+	void findInstructorById() {
+		when(instructorRepository.findById(1L)).thenReturn(Optional.of(Instructor.createWithId(1L, "김남준", "소개")));
+
+		Instructor result = courseService.findInstructorById(1L);
+
+		assertThat(result.getId()).isEqualTo(1L);
+		assertThat(result.getName()).isEqualTo("김남준");
+	}
+
+	@Test
+	@DisplayName("성공 - 강의의 콘텐츠 목록을 순서대로 조회한다")
+	void findContentsByCourseId() {
+		when(courseRepository.findById(1L)).thenReturn(Optional.of(
+			Course.createWithId(1L, 1L, "Java 입문", "기초 문법", 10000, Level.LOW, null, null)
+		));
+		when(contentRepository.findAll()).thenReturn(List.of(
+			Content.createWithId(2L, 1L, "for 문", "설명", ContentType.TEXT, 2),
+			Content.createWithId(1L, 1L, "원시타입", "설명", ContentType.TEXT, 1),
+			Content.createWithId(3L, 2L, "JPA", "설명", ContentType.TEXT, 1)
+		));
+
+		List<Content> result = courseService.findContentsByCourseId(1L);
+
+		assertThat(result).extracting(Content::getTitle)
+			.containsExactly("원시타입", "for 문");
 	}
 }

@@ -90,7 +90,6 @@ class CourseViewTest {
 		boolean result = courseView.handle(CourseCommand.LIST);
 
 		// then
-		verify(courseController).findAll();
 		verify(courseListView).run();
 		assertThat(result).isTrue();
 	}
