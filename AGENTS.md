@@ -68,9 +68,9 @@ com.lxp/
 
 ## Codex Local Skills
 
-- `.codex/skills/develop`
-- `.codex/skills/test`
-- `.codex/skills/ship`
+- `.agents/skills/develop`
+- `.agents/skills/test`
+- `.agents/skills/ship`
 
 ## Working Rules
 

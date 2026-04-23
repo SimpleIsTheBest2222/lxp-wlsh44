@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ship"
+  short_description: "Prepare, verify, and ship LMS branch changes"
+  default_prompt: "Use $ship to verify, push, and prepare a PR for this LMS console admin repo."

@@ -1,7 +1,22 @@
 package com.lxp.domain.enums;
 
+import com.lxp.common.validate.Assert;
+import com.lxp.exception.ErrorCode;
+import com.lxp.exception.LxpException;
+
 public enum Level {
 	LOW, MIDDLE, HIGH;
+
+	public static Level from(String value) {
+		Assert.notEmpty(value, ErrorCode.INVALID_INPUT);
+
+		return switch (value.trim().toUpperCase()) {
+			case "1", "LOW" -> LOW;
+			case "2", "MIDDLE" -> MIDDLE;
+			case "3", "HIGH" -> HIGH;
+			default -> throw new LxpException(ErrorCode.INVALID_LEVEL);
+		};
+	}
 
 	public String displayName() {
 		return switch (this) {

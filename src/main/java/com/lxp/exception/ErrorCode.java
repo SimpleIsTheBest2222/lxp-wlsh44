@@ -24,6 +24,7 @@ public enum ErrorCode {
 	COURSE_TITLE_OUT_OF_RANGE("강의 제목의 길이가 범위를 벗어났습니다."),
 	COURSE_DESCRIPTION_OUT_OF_RANGE("강의 설명의 길이가 범위를 벗어났습니다."),
 	COURSE_PRICE_NEGATIVE("강의 가격은 0 이상이어야 합니다."),
+	COURSE_CONTENT_COUNT_OUT_OF_RANGE("강의 콘텐츠 개수는 1개 이상 10개 이하여야 합니다."),
 
 	// Content
 	NOT_FOUND_CONTENT_TYPE("유효하지 않은 콘텐츠 타입입니다. (VIDEO/TEXT/FILE)"),
