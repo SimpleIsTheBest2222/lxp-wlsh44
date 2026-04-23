@@ -10,18 +10,16 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum CourseDetailCommand implements MenuCommand {
+public enum ContentDetailCommand implements MenuCommand {
 
-	UPDATE(1, "강의 수정"),
-	DELETE(2, "강의 삭제"),
-	REGISTER_CONTENT(3, "콘텐츠 등록"),
-	SELECT_CONTENT(4, "콘텐츠 선택"),
-	BACK(5, "뒤로 가기");
+	UPDATE(1, "콘텐츠 수정"),
+	DELETE(2, "콘텐츠 삭제"),
+	BACK(3, "뒤로 가기");
 
 	private final int value;
 	private final String label;
 
-	public static CourseDetailCommand from(int value) {
+	public static ContentDetailCommand from(int value) {
 		return Arrays.stream(values())
 			.filter(command -> command.value == value)
 			.findFirst()

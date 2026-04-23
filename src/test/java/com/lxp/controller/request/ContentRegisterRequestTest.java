@@ -22,10 +22,51 @@ class ContentRegisterRequestTest {
 	}
 
 	@Test
+	@DisplayName("성공 - 문자열 콘텐츠 타입 입력을 변환한다")
+	void create_withContentTypeText() {
+		ContentRegisterRequest request = new ContentRegisterRequest(1L, "원시타입", "설명", "1");
+
+		assertThat(request.courseId()).isEqualTo(1L);
+		assertThat(request.contentType()).isEqualTo(ContentType.VIDEO);
+	}
+
+	@Test
+	@DisplayName("실패 - 내용이 공백이면 예외가 발생한다")
+	void create_blankBody() {
+		assertThatThrownBy(() -> new ContentRegisterRequest("원시타입", "   "))
+			.isInstanceOf(LxpException.class)
+			.hasMessage(ErrorCode.INVALID_INPUT.getMessage());
+	}
+
+	@Test
+	@DisplayName("실패 - 콘텐츠 타입이 null이면 예외가 발생한다")
+	void create_nullContentType() {
+		assertThatThrownBy(() -> new ContentRegisterRequest(1L, "원시타입", "설명", (ContentType)null))
+			.isInstanceOf(LxpException.class)
+			.hasMessage(ErrorCode.INVALID_INPUT.getMessage());
+	}
+
+	@Test
 	@DisplayName("실패 - 제목이 공백이면 예외가 발생한다")
 	void create_blankTitle() {
 		assertThatThrownBy(() -> new ContentRegisterRequest("   ", "설명"))
 			.isInstanceOf(LxpException.class)
 			.hasMessage(ErrorCode.INVALID_INPUT.getMessage());
+	}
+
+	@Test
+	@DisplayName("실패 - courseId가 0이면 예외가 발생한다")
+	void create_invalidCourseId() {
+		assertThatThrownBy(() -> new ContentRegisterRequest(0L, "원시타입", "설명", "TEXT"))
+			.isInstanceOf(LxpException.class)
+			.hasMessage(ErrorCode.INVALID_INPUT.getMessage());
+	}
+
+	@Test
+	@DisplayName("실패 - 콘텐츠 타입 문자열이 유효하지 않으면 예외가 발생한다")
+	void create_invalidContentTypeText() {
+		assertThatThrownBy(() -> new ContentRegisterRequest(1L, "원시타입", "설명", "LINK"))
+			.isInstanceOf(LxpException.class)
+			.hasMessage(ErrorCode.INVALID_CONTENT_TYPE.getMessage());
 	}
 }

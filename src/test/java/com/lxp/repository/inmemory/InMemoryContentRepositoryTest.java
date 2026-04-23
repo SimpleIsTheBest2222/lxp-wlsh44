@@ -25,6 +25,27 @@ class InMemoryContentRepositoryTest {
 	}
 
 	@Test
+	@DisplayName("성공 - id가 있는 콘텐츠를 저장하면 기존 콘텐츠를 수정한다")
+	void save_existingContent() {
+		Content savedContent = contentRepository.save(Content.create(1L, "원시타입", "설명", ContentType.TEXT, 1));
+		Content updatedContent = Content.createWithId(
+			savedContent.getId(),
+			savedContent.getCourseId(),
+			"Stream",
+			"Stream 설명",
+			savedContent.getContentType(),
+			savedContent.getSeq()
+		);
+
+		Content result = contentRepository.save(updatedContent);
+
+		assertThat(result.getId()).isEqualTo(savedContent.getId());
+		assertThat(result.getTitle()).isEqualTo("Stream");
+		assertThat(result.getBody()).isEqualTo("Stream 설명");
+		assertThat(contentRepository.findAll()).hasSize(1);
+	}
+
+	@Test
 	@DisplayName("성공 - 콘텐츠를 삭제하면 soft delete 처리되어 조회되지 않는다")
 	void deleteById() {
 		Content savedContent = contentRepository.save(Content.create(1L, "원시타입", "설명", ContentType.TEXT, 1));

@@ -13,9 +13,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.lxp.controller.ContentController;
 import com.lxp.controller.CourseController;
+import com.lxp.controller.request.ContentRegisterRequest;
 import com.lxp.controller.request.CourseDeleteRequest;
 import com.lxp.controller.request.CourseUpdateRequest;
+import com.lxp.controller.response.ContentRegisterResponse;
 import com.lxp.controller.response.ContentSummaryResponse;
 import com.lxp.controller.response.CourseDeleteResponse;
 import com.lxp.controller.response.CourseDetailResponse;
@@ -37,6 +40,12 @@ class CourseDetailViewTest {
 
 	@Mock
 	private CourseController courseController;
+
+	@Mock
+	private ContentController contentController;
+
+	@Mock
+	private ContentSelectView contentSelectView;
 
 	@InjectMocks
 	private CourseDetailView courseDetailView;
@@ -111,11 +120,32 @@ class CourseDetailViewTest {
 	}
 
 	@Test
-	@DisplayName("성공 - 콘텐츠 선택은 아직 구현 예정 안내 문구를 출력한다")
+	@DisplayName("성공 - REGISTER_CONTENT 처리 시 입력을 받아 콘텐츠 등록 후 성공 문구를 출력한다")
+	void handle_registerContent() {
+		courseDetailView.run(1L);
+		when(inputView.readLine()).thenReturn("Stream", "TEXT", "Stream API 설명");
+		when(contentController.register(new ContentRegisterRequest(1L, "Stream", "Stream API 설명", "TEXT")))
+			.thenReturn(new ContentRegisterResponse(3L));
+
+		boolean result = courseDetailView.handle(CourseDetailCommand.REGISTER_CONTENT);
+
+		verify(outputView).printHeader("콘텐츠 등록");
+		verify(outputView).printLabel("  콘텐츠 제목  : ");
+		verify(outputView).printLabel("  콘텐츠 타입(VIDEO/TEXT/FILE)  : ");
+		verify(outputView).printLabel("  콘텐츠 내용  : ");
+		verify(contentController).register(new ContentRegisterRequest(1L, "Stream", "Stream API 설명", "TEXT"));
+		verify(outputView).printSuccess("  콘텐츠가 등록되었습니다. id: 3");
+		assertThat(result).isTrue();
+	}
+
+	@Test
+	@DisplayName("성공 - SELECT_CONTENT 처리 시 콘텐츠 선택 화면으로 이동한다")
 	void handle_selectContent() {
+		courseDetailView.run(1L);
+
 		boolean result = courseDetailView.handle(CourseDetailCommand.SELECT_CONTENT);
 
-		verify(outputView).printNotImplemented();
+		verify(contentSelectView).run(1L);
 		assertThat(result).isTrue();
 	}
 
