@@ -14,7 +14,14 @@ public record ContentRegisterRequest(Long courseId, String title, String body, C
 		this(courseId, title, body, ContentType.TEXT);
 	}
 
+	public ContentRegisterRequest(Long courseId, String title, String body, String contentType) {
+		this(courseId, title, body, ContentType.from(contentType));
+	}
+
 	public ContentRegisterRequest {
+		if (courseId != null) {
+			Assert.isTrue(courseId > 0, ErrorCode.INVALID_INPUT);
+		}
 		Assert.notEmpty(title, ErrorCode.INVALID_INPUT);
 		Assert.notEmpty(body, ErrorCode.INVALID_INPUT);
 		Assert.notNull(contentType, ErrorCode.INVALID_INPUT);

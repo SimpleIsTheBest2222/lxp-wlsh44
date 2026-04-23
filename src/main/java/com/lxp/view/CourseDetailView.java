@@ -4,9 +4,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import com.lxp.controller.ContentController;
 import com.lxp.controller.CourseController;
+import com.lxp.controller.request.ContentRegisterRequest;
 import com.lxp.controller.request.CourseDeleteRequest;
 import com.lxp.controller.request.CourseUpdateRequest;
+import com.lxp.controller.response.ContentRegisterResponse;
 import com.lxp.controller.response.CourseDeleteResponse;
 import com.lxp.controller.response.CourseDetailResponse;
 import com.lxp.controller.response.CourseUpdateResponse;
@@ -23,6 +26,8 @@ public class CourseDetailView implements MenuStrategy<CourseDetailCommand> {
 	private final InputView inputView;
 	private final OutputView outputView;
 	private final CourseController courseController;
+	private final ContentController contentController;
+	private final ContentSelectView contentSelectView;
 
 	private Long courseId;
 
@@ -50,7 +55,8 @@ public class CourseDetailView implements MenuStrategy<CourseDetailCommand> {
 				deleteCourse();
 				return false;
 			}
-			case SELECT_CONTENT -> outputView.printNotImplemented();
+			case REGISTER_CONTENT -> registerContent();
+			case SELECT_CONTENT -> contentSelectView.run(courseId);
 			case BACK -> {
 				return false;
 			}
@@ -143,6 +149,27 @@ public class CourseDetailView implements MenuStrategy<CourseDetailCommand> {
 		CourseDeleteResponse response = courseController.delete(request);
 		outputView.printSectionLine();
 		outputView.printSuccess("  삭제가 완료되었습니다. id: " + response.id());
+		outputView.printSectionLine();
+	}
+
+	private void registerContent() {
+		outputView.printHeader("콘텐츠 등록");
+
+		outputView.printLabel("  콘텐츠 제목  : ");
+		String title = inputView.readLine();
+
+		outputView.printLabel("  콘텐츠 타입(VIDEO/TEXT/FILE)  : ");
+		String contentType = inputView.readLine();
+
+		outputView.printLabel("  콘텐츠 내용  : ");
+		String body = inputView.readLine();
+
+		outputView.printEmptyLine();
+		outputView.printSectionLine();
+
+		ContentRegisterRequest request = new ContentRegisterRequest(courseId, title, body, contentType);
+		ContentRegisterResponse response = contentController.register(request);
+		outputView.printSuccess("  콘텐츠가 등록되었습니다. id: " + response.id());
 		outputView.printSectionLine();
 	}
 }
