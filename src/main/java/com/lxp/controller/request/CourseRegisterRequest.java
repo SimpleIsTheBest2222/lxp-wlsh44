@@ -7,6 +7,7 @@ import com.lxp.domain.enums.Level;
 import com.lxp.exception.ErrorCode;
 
 public record CourseRegisterRequest(
+	Long instructorId,
 	String title,
 	String description,
 	int price,
@@ -14,21 +15,24 @@ public record CourseRegisterRequest(
 	List<ContentRegisterRequest> contents
 ) {
 
-	public CourseRegisterRequest(String title, String description, int price, String level) {
-		this(title, description, price, Level.from(level), List.of());
+	public CourseRegisterRequest(Long instructorId, String title, String description, int price, String level) {
+		this(instructorId, title, description, price, Level.from(level), List.of());
 	}
 
 	public CourseRegisterRequest(
+		Long instructorId,
 		String title,
 		String description,
 		int price,
 		String level,
 		List<ContentRegisterRequest> contents
 	) {
-		this(title, description, price, Level.from(level), contents);
+		this(instructorId, title, description, price, Level.from(level), contents);
 	}
 
 	public CourseRegisterRequest {
+		Assert.notNull(instructorId, ErrorCode.INVALID_INPUT);
+		Assert.isTrue(instructorId > 0, ErrorCode.INVALID_INPUT);
 		Assert.notEmpty(title, ErrorCode.INVALID_INPUT);
 		Assert.notEmpty(description, ErrorCode.INVALID_INPUT);
 		Assert.isTrue(price >= 0, ErrorCode.INVALID_INPUT);

@@ -59,6 +59,9 @@ public class CourseView implements MenuStrategy<CourseCommand> {
 		outputView.printLabel("  가격         : ");
 		int price = inputView.readInt();
 
+		outputView.printLabel("  강사 ID      : ");
+		Long instructorId = (long)inputView.readInt();
+
 		outputView.printLabel("  난이도(LOW/MIDDLE/HIGH)   : ");
 		String level = inputView.readLine();
 
@@ -69,7 +72,7 @@ public class CourseView implements MenuStrategy<CourseCommand> {
 		outputView.printSectionLine();
 
 		List<ContentRegisterRequest> contents = registerContents();
-		CourseRegisterRequest request = new CourseRegisterRequest(title, description, price, level, contents);
+		CourseRegisterRequest request = new CourseRegisterRequest(instructorId, title, description, price, level, contents);
 		CourseRegisterResponse response = courseController.register(request);
 
 		outputView.printSuccess("  강의가 등록되었습니다. id: " + response.id());

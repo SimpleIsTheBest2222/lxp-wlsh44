@@ -17,8 +17,9 @@ class CourseRegisterRequestTest {
 	@Test
 	@DisplayName("성공 - 숫자 난이도 입력을 Level로 변환한다")
 	void create_numericLevel() {
-		CourseRegisterRequest request = new CourseRegisterRequest("Java 입문", "기초 문법", 10000, "1");
+		CourseRegisterRequest request = new CourseRegisterRequest(1L, "Java 입문", "기초 문법", 10000, "1");
 
+		assertThat(request.instructorId()).isEqualTo(1L);
 		assertThat(request.level()).isEqualTo(Level.LOW);
 		assertThat(request.contents()).isEmpty();
 	}
@@ -26,7 +27,7 @@ class CourseRegisterRequestTest {
 	@Test
 	@DisplayName("성공 - 문자 난이도 입력을 Level로 변환한다")
 	void create_textLevel() {
-		CourseRegisterRequest request = new CourseRegisterRequest("Java 입문", "기초 문법", 10000, "middle");
+		CourseRegisterRequest request = new CourseRegisterRequest(1L, "Java 입문", "기초 문법", 10000, "middle");
 
 		assertThat(request.level()).isEqualTo(Level.MIDDLE);
 	}
@@ -35,6 +36,7 @@ class CourseRegisterRequestTest {
 	@DisplayName("성공 - 콘텐츠 목록을 함께 담을 수 있다")
 	void create_withContents() {
 		CourseRegisterRequest request = new CourseRegisterRequest(
+			1L,
 			"Java 입문",
 			"기초 문법",
 			10000,
@@ -50,6 +52,7 @@ class CourseRegisterRequestTest {
 	@DisplayName("실패 - 콘텐츠 목록이 null이면 예외가 발생한다")
 	void create_nullContents() {
 		assertThatThrownBy(() -> new CourseRegisterRequest(
+			1L,
 			"Java 입문",
 			"기초 문법",
 			10000,
@@ -61,9 +64,25 @@ class CourseRegisterRequestTest {
 	}
 
 	@Test
+	@DisplayName("실패 - 강사 id가 null이면 예외가 발생한다")
+	void create_nullInstructorId() {
+		assertThatThrownBy(() -> new CourseRegisterRequest(null, "Java 입문", "기초 문법", 10000, "LOW"))
+			.isInstanceOf(LxpException.class)
+			.hasMessage(ErrorCode.INVALID_INPUT.getMessage());
+	}
+
+	@Test
+	@DisplayName("실패 - 강사 id가 0이면 예외가 발생한다")
+	void create_invalidInstructorId() {
+		assertThatThrownBy(() -> new CourseRegisterRequest(0L, "Java 입문", "기초 문법", 10000, "LOW"))
+			.isInstanceOf(LxpException.class)
+			.hasMessage(ErrorCode.INVALID_INPUT.getMessage());
+	}
+
+	@Test
 	@DisplayName("실패 - 제목이 공백이면 예외가 발생한다")
 	void create_blankTitle() {
-		assertThatThrownBy(() -> new CourseRegisterRequest("   ", "기초 문법", 10000, "LOW"))
+		assertThatThrownBy(() -> new CourseRegisterRequest(1L, "   ", "기초 문법", 10000, "LOW"))
 			.isInstanceOf(LxpException.class)
 			.hasMessage(ErrorCode.INVALID_INPUT.getMessage());
 	}
@@ -71,7 +90,7 @@ class CourseRegisterRequestTest {
 	@Test
 	@DisplayName("실패 - 가격이 음수이면 예외가 발생한다")
 	void create_negativePrice() {
-		assertThatThrownBy(() -> new CourseRegisterRequest("Java 입문", "기초 문법", -1, "LOW"))
+		assertThatThrownBy(() -> new CourseRegisterRequest(1L, "Java 입문", "기초 문법", -1, "LOW"))
 			.isInstanceOf(LxpException.class)
 			.hasMessage(ErrorCode.INVALID_INPUT.getMessage());
 	}
@@ -79,7 +98,7 @@ class CourseRegisterRequestTest {
 	@Test
 	@DisplayName("실패 - 난이도 입력이 유효하지 않으면 예외가 발생한다")
 	void create_invalidLevel() {
-		assertThatThrownBy(() -> new CourseRegisterRequest("Java 입문", "기초 문법", 10000, "expert"))
+		assertThatThrownBy(() -> new CourseRegisterRequest(1L, "Java 입문", "기초 문법", 10000, "expert"))
 			.isInstanceOf(LxpException.class)
 			.hasMessage(ErrorCode.INVALID_LEVEL.getMessage());
 	}

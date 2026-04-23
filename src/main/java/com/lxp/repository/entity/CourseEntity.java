@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class CourseEntity extends BaseEntity {
 
 	private Long id;
+	private Long instructorId;
 	private String title;
 	private String description;
 	private int price;
@@ -23,6 +24,7 @@ public class CourseEntity extends BaseEntity {
 	public static CourseEntity create(Long id, Course course, LocalDateTime now) {
 		CourseEntity courseEntity = new CourseEntity();
 		courseEntity.id = id;
+		courseEntity.instructorId = course.getInstructorId();
 		courseEntity.title = course.getTitle();
 		courseEntity.description = course.getDescription();
 		courseEntity.price = course.getPrice();
@@ -33,6 +35,7 @@ public class CourseEntity extends BaseEntity {
 
 	public static CourseEntity restore(
 		Long id,
+		Long instructorId,
 		String title,
 		String description,
 		int price,
@@ -43,6 +46,7 @@ public class CourseEntity extends BaseEntity {
 	) {
 		CourseEntity courseEntity = new CourseEntity();
 		courseEntity.id = id;
+		courseEntity.instructorId = instructorId;
 		courseEntity.title = title;
 		courseEntity.description = description;
 		courseEntity.price = price;
@@ -52,6 +56,7 @@ public class CourseEntity extends BaseEntity {
 	}
 
 	public void update(Course course, LocalDateTime now) {
+		this.instructorId = course.getInstructorId();
 		this.title = course.getTitle();
 		this.description = course.getDescription();
 		this.price = course.getPrice();
@@ -64,6 +69,6 @@ public class CourseEntity extends BaseEntity {
 	}
 
 	public Course toDomain() {
-		return Course.createWithId(id, title, description, price, level, getCreatedAt(), getModifiedAt());
+		return Course.createWithId(id, instructorId, title, description, price, level, getCreatedAt(), getModifiedAt());
 	}
 }

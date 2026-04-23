@@ -17,6 +17,7 @@ public class Course {
 	private static final int MAXIMUM_DESCRIPTION_LENGTH = 200;
 
 	private Long id;
+	private Long instructorId;
 	private String title;
 	private String description;
 	private int price;
@@ -25,8 +26,13 @@ public class Course {
 	private LocalDateTime modifiedAt;
 
 	public static Course create(String title, String description, int price, Level level) {
+		return create(null, title, description, price, level);
+	}
+
+	public static Course create(Long instructorId, String title, String description, int price, Level level) {
 		Course course = new Course();
 
+		course.instructorId = instructorId;
 		course.title = validateTitle(title);
 		course.description = validateDescription(description);
 		course.price = validatePrice(price);
@@ -37,9 +43,15 @@ public class Course {
 
 	public static Course createWithId(Long id, String title, String description, int price, Level level,
 		LocalDateTime createdAt, LocalDateTime modifiedAt) {
+		return createWithId(id, null, title, description, price, level, createdAt, modifiedAt);
+	}
+
+	public static Course createWithId(Long id, Long instructorId, String title, String description, int price, Level level,
+		LocalDateTime createdAt, LocalDateTime modifiedAt) {
 		Course course = new Course();
 
 		course.id = validateId(id);
+		course.instructorId = instructorId;
 		course.title = validateTitle(title);
 		course.description = validateDescription(description);
 		course.price = validatePrice(price);

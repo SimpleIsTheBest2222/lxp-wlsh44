@@ -11,7 +11,8 @@ public class ServiceConfig {
 	public ServiceConfig(RepositoryConfig repositoryConfig) {
 		this.courseService = new CourseService(
 			repositoryConfig.courseRepository(),
-			repositoryConfig.contentRepository()
+			repositoryConfig.contentRepository(),
+			repositoryConfig.instructorRepository()
 		);
 		this.instructorService = new InstructorService(repositoryConfig.instructorRepository());
 	}
