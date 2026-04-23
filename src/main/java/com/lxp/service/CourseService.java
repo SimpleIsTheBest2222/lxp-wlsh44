@@ -4,7 +4,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.lxp.controller.request.ContentRegisterRequest;
+import com.lxp.controller.request.CourseDeleteRequest;
 import com.lxp.controller.request.CourseRegisterRequest;
+import com.lxp.controller.request.CourseUpdateRequest;
 import com.lxp.domain.Content;
 import com.lxp.domain.Course;
 import com.lxp.domain.Instructor;
@@ -60,6 +62,20 @@ public class CourseService {
 			.filter(content -> content.getCourseId().equals(courseId))
 			.sorted(Comparator.comparingInt(Content::getSeq))
 			.toList();
+	}
+
+	public Course update(CourseUpdateRequest request) {
+		Course course = findDetailById(request.id());
+		course.update(request.title(), request.description(), request.price(), request.level());
+		return courseRepository.save(course);
+	}
+
+	public Course delete(CourseDeleteRequest request) {
+		Course course = findDetailById(request.id());
+		findContentsByCourseId(request.id())
+			.forEach(content -> contentRepository.deleteById(content.getId()));
+		courseRepository.deleteById(request.id());
+		return course;
 	}
 
 	private void validateContentCount(CourseRegisterRequest request) {
