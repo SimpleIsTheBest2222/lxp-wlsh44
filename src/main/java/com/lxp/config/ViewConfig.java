@@ -57,6 +57,7 @@ public class ViewConfig {
 		);
 		this.courseView = new CourseView(
 			menuRenderer,
+			inputView,
 			outputView,
 			this.controllerConfig.courseController(),
 			courseListView
