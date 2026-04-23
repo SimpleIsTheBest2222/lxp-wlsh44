@@ -5,7 +5,11 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import com.lxp.controller.CourseController;
+import com.lxp.controller.request.CourseDeleteRequest;
+import com.lxp.controller.request.CourseUpdateRequest;
+import com.lxp.controller.response.CourseDeleteResponse;
 import com.lxp.controller.response.CourseDetailResponse;
+import com.lxp.controller.response.CourseUpdateResponse;
 import com.lxp.view.command.CourseDetailCommand;
 
 import lombok.RequiredArgsConstructor;
@@ -16,6 +20,7 @@ public class CourseDetailView implements MenuStrategy<CourseDetailCommand> {
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
 	private final MenuRenderer menuRenderer;
+	private final InputView inputView;
 	private final OutputView outputView;
 	private final CourseController courseController;
 
@@ -40,7 +45,12 @@ public class CourseDetailView implements MenuStrategy<CourseDetailCommand> {
 	@Override
 	public boolean handle(CourseDetailCommand command) {
 		switch (command) {
-			case UPDATE, DELETE, SELECT_CONTENT -> outputView.printNotImplemented();
+			case UPDATE -> updateCourse();
+			case DELETE -> {
+				deleteCourse();
+				return false;
+			}
+			case SELECT_CONTENT -> outputView.printNotImplemented();
 			case BACK -> {
 				return false;
 			}
@@ -93,5 +103,46 @@ public class CourseDetailView implements MenuStrategy<CourseDetailCommand> {
 			.mapToObj(index -> "  %d. %s".formatted(index + 1, response.contents().get(index).title()))
 			.reduce((left, right) -> left + System.lineSeparator() + right)
 			.orElse(outputView.muted("  등록된 콘텐츠가 없습니다."));
+	}
+
+	private void updateCourse() {
+		outputView.printHeader("강의 상세 정보 수정");
+		outputView.printBody("  빈 값 입력 시 기존 값이 유지됩니다.");
+		outputView.printSectionLine();
+		outputView.printEmptyLine();
+
+		outputView.printLabel("  강의 제목    : ");
+		String title = inputView.readLine();
+
+		outputView.printLabel("  가격         : ");
+		String price = inputView.readLine();
+
+		outputView.printLabel("  난이도       : ");
+		String level = inputView.readLine();
+
+		outputView.printLabel("  강의 설명    : ");
+		String description = inputView.readLine();
+
+		outputView.printEmptyLine();
+		outputView.printSectionLine();
+
+		CourseUpdateRequest request = new CourseUpdateRequest(
+			courseId,
+			title,
+			description,
+			price,
+			level
+		);
+		CourseUpdateResponse response = courseController.update(request);
+		outputView.printSuccess("  수정되었습니다. id: " + response.id());
+		outputView.printSectionLine();
+	}
+
+	private void deleteCourse() {
+		CourseDeleteRequest request = new CourseDeleteRequest(courseId);
+		CourseDeleteResponse response = courseController.delete(request);
+		outputView.printSectionLine();
+		outputView.printSuccess("  삭제가 완료되었습니다. id: " + response.id());
+		outputView.printSectionLine();
 	}
 }

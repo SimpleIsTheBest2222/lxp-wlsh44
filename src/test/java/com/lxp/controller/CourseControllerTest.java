@@ -14,10 +14,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.lxp.controller.request.ContentRegisterRequest;
+import com.lxp.controller.request.CourseDeleteRequest;
 import com.lxp.controller.request.CourseRegisterRequest;
+import com.lxp.controller.request.CourseUpdateRequest;
+import com.lxp.controller.response.CourseDeleteResponse;
 import com.lxp.controller.response.CourseDetailResponse;
 import com.lxp.controller.response.CourseListResponse;
 import com.lxp.controller.response.CourseRegisterResponse;
+import com.lxp.controller.response.CourseUpdateResponse;
 import com.lxp.domain.Content;
 import com.lxp.domain.Course;
 import com.lxp.domain.Instructor;
@@ -95,5 +99,29 @@ class CourseControllerTest {
 		assertThat(response.contents()).hasSize(1);
 		assertThat(response.contents().get(0).title()).isEqualTo("원시타입");
 		assertThat(response.level()).isEqualTo("입문");
+	}
+
+	@Test
+	@DisplayName("성공 - 강의를 수정하면 id를 반환한다")
+	void update() {
+		CourseUpdateRequest request = new CourseUpdateRequest(1L, "Java 심화", "심화 문법", "120000", "HIGH");
+		when(courseService.update(request))
+			.thenReturn(Course.createWithId(1L, 1L, "Java 심화", "심화 문법", 120000, Level.HIGH, null, null));
+
+		CourseUpdateResponse response = courseController.update(request);
+
+		assertThat(response.id()).isEqualTo(1L);
+	}
+
+	@Test
+	@DisplayName("성공 - 강의를 삭제하면 id를 반환한다")
+	void delete() {
+		CourseDeleteRequest request = new CourseDeleteRequest(1L);
+		when(courseService.delete(request))
+			.thenReturn(Course.createWithId(1L, 1L, "Java 입문", "기초 문법", 10000, Level.LOW, null, null));
+
+		CourseDeleteResponse response = courseController.delete(request);
+
+		assertThat(response.id()).isEqualTo(1L);
 	}
 }

@@ -2,12 +2,16 @@ package com.lxp.controller;
 
 import java.util.List;
 
+import com.lxp.controller.request.CourseDeleteRequest;
 import com.lxp.controller.request.CourseRegisterRequest;
+import com.lxp.controller.request.CourseUpdateRequest;
 import com.lxp.controller.response.ContentSummaryResponse;
+import com.lxp.controller.response.CourseDeleteResponse;
 import com.lxp.controller.response.CourseDetailResponse;
 import com.lxp.controller.response.CourseListResponse;
 import com.lxp.controller.response.CourseRegisterResponse;
 import com.lxp.controller.response.CourseSummaryResponse;
+import com.lxp.controller.response.CourseUpdateResponse;
 import com.lxp.domain.Course;
 import com.lxp.domain.Instructor;
 import com.lxp.service.CourseService;
@@ -54,5 +58,15 @@ public class CourseController {
 			course.getCreatedAt(),
 			course.getModifiedAt()
 		);
+	}
+
+	public CourseUpdateResponse update(CourseUpdateRequest request) {
+		Course course = courseService.update(request);
+		return new CourseUpdateResponse(course.getId());
+	}
+
+	public CourseDeleteResponse delete(CourseDeleteRequest request) {
+		Course course = courseService.delete(request);
+		return new CourseDeleteResponse(course.getId());
 	}
 }

@@ -50,6 +50,7 @@ public class ViewConfig {
 		);
 		this.courseDetailView = new CourseDetailView(
 			menuRenderer,
+			inputView,
 			outputView,
 			this.controllerConfig.courseController()
 		);

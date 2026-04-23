@@ -14,8 +14,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.lxp.controller.CourseController;
+import com.lxp.controller.request.CourseDeleteRequest;
+import com.lxp.controller.request.CourseUpdateRequest;
 import com.lxp.controller.response.ContentSummaryResponse;
+import com.lxp.controller.response.CourseDeleteResponse;
 import com.lxp.controller.response.CourseDetailResponse;
+import com.lxp.controller.response.CourseUpdateResponse;
 import com.lxp.view.command.CourseDetailCommand;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,6 +28,9 @@ class CourseDetailViewTest {
 
 	@Mock
 	private MenuRenderer menuRenderer;
+
+	@Mock
+	private InputView inputView;
 
 	@Mock
 	private OutputView outputView;
@@ -70,9 +77,43 @@ class CourseDetailViewTest {
 	}
 
 	@Test
-	@DisplayName("성공 - 미구현 메뉴 선택 시 안내 문구를 출력한다")
-	void handle_notImplemented() {
+	@DisplayName("성공 - UPDATE 처리 시 입력을 받아 수정 후 성공 문구를 출력한다")
+	void handle_update() {
+		courseDetailView.run(1L);
+		when(inputView.readLine()).thenReturn("Java 심화", "120000", "HIGH", "심화 문법");
+		when(courseController.update(new CourseUpdateRequest(1L, "Java 심화", "심화 문법", "120000", "HIGH")))
+			.thenReturn(new CourseUpdateResponse(1L));
+
 		boolean result = courseDetailView.handle(CourseDetailCommand.UPDATE);
+
+		verify(outputView).printHeader("강의 상세 정보 수정");
+		verify(outputView).printBody("  빈 값 입력 시 기존 값이 유지됩니다.");
+		verify(outputView).printLabel("  강의 제목    : ");
+		verify(outputView).printLabel("  가격         : ");
+		verify(outputView).printLabel("  난이도       : ");
+		verify(outputView).printLabel("  강의 설명    : ");
+		verify(courseController).update(new CourseUpdateRequest(1L, "Java 심화", "심화 문법", "120000", "HIGH"));
+		verify(outputView).printSuccess("  수정되었습니다. id: 1");
+		assertThat(result).isTrue();
+	}
+
+	@Test
+	@DisplayName("성공 - DELETE 처리 시 삭제 후 화면을 종료한다")
+	void handle_delete() {
+		courseDetailView.run(1L);
+		when(courseController.delete(new CourseDeleteRequest(1L))).thenReturn(new CourseDeleteResponse(1L));
+
+		boolean result = courseDetailView.handle(CourseDetailCommand.DELETE);
+
+		verify(courseController).delete(new CourseDeleteRequest(1L));
+		verify(outputView).printSuccess("  삭제가 완료되었습니다. id: 1");
+		assertThat(result).isFalse();
+	}
+
+	@Test
+	@DisplayName("성공 - 콘텐츠 선택은 아직 구현 예정 안내 문구를 출력한다")
+	void handle_selectContent() {
+		boolean result = courseDetailView.handle(CourseDetailCommand.SELECT_CONTENT);
 
 		verify(outputView).printNotImplemented();
 		assertThat(result).isTrue();
