@@ -44,7 +44,7 @@ class CourseServiceTest {
 	private InstructorRepository instructorRepository;
 
 	@InjectMocks
-	private CourseService courseService;
+	private DefaultCourseService courseService;
 
 	@Test
 	@DisplayName("성공 - 강의와 콘텐츠를 함께 등록한다")

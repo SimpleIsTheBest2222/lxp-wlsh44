@@ -2,7 +2,12 @@ package com.lxp.config;
 
 import com.lxp.service.ContentService;
 import com.lxp.service.CourseService;
+import com.lxp.service.DefaultContentService;
+import com.lxp.service.DefaultCourseService;
+import com.lxp.service.DefaultInstructorService;
 import com.lxp.service.InstructorService;
+import com.lxp.transaction.JdbcTransactionManager;
+import com.lxp.transaction.TransactionProxyFactory;
 
 public class ServiceConfig {
 
@@ -11,16 +16,30 @@ public class ServiceConfig {
 	private final InstructorService instructorService;
 
 	public ServiceConfig(RepositoryConfig repositoryConfig) {
-		this.courseService = new CourseService(
+		CourseService courseService = new DefaultCourseService(
 			repositoryConfig.courseRepository(),
 			repositoryConfig.contentRepository(),
 			repositoryConfig.instructorRepository()
 		);
-		this.contentService = new ContentService(
+		ContentService contentService = new DefaultContentService(
 			repositoryConfig.courseRepository(),
 			repositoryConfig.contentRepository()
 		);
-		this.instructorService = new InstructorService(repositoryConfig.instructorRepository());
+		InstructorService instructorService = new DefaultInstructorService(repositoryConfig.instructorRepository());
+
+		if (repositoryConfig.isJdbcMode()) {
+			TransactionProxyFactory proxyFactory = new TransactionProxyFactory(
+				new JdbcTransactionManager(repositoryConfig.connectionProvider())
+			);
+			this.courseService = proxyFactory.createProxy(CourseService.class, courseService);
+			this.contentService = proxyFactory.createProxy(ContentService.class, contentService);
+			this.instructorService = proxyFactory.createProxy(InstructorService.class, instructorService);
+			return;
+		}
+
+		this.courseService = courseService;
+		this.contentService = contentService;
+		this.instructorService = instructorService;
 	}
 
 	public CourseService courseService() {

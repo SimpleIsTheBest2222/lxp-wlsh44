@@ -30,7 +30,7 @@ class InstructorServiceTest {
 	private InstructorRepository instructorRepository;
 
 	@InjectMocks
-	private InstructorService instructorService;
+	private DefaultInstructorService instructorService;
 
 	@Test
 	@DisplayName("성공 - 강사를 등록한다")

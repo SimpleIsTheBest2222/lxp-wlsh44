@@ -20,7 +20,11 @@ public class ConfigLoader {
 	private static final String DEFAULT_PASSWORD = "";
 
 	public AppProperties load() {
-		try (InputStream inputStream = resourceStream()) {
+		return load(CONFIG_FILE);
+	}
+
+	public AppProperties load(String resourceName) {
+		try (InputStream inputStream = resourceStream(resourceName)) {
 			Map<String, String> values = parse(inputStream);
 			return new AppProperties(
 				values.getOrDefault("repository.mode", DEFAULT_REPOSITORY_MODE),
@@ -36,7 +40,11 @@ public class ConfigLoader {
 	}
 
 	private InputStream resourceStream() {
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(CONFIG_FILE);
+		return resourceStream(CONFIG_FILE);
+	}
+
+	private InputStream resourceStream(String resourceName) {
+		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(resourceName);
 		if (inputStream == null) {
 			throw new LxpException(ErrorCode.INTERNAL_SERVER_ERROR);
 		}
