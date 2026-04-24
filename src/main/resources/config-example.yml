@@ -1,0 +1,7 @@
+repository:
+  mode: jdbc
+
+db:
+  url: "jdbc:mysql://localhost:3306/lxp"
+  username: "username"
+  password: ""

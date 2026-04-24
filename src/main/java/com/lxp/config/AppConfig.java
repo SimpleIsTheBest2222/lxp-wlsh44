@@ -15,7 +15,9 @@ public class AppConfig {
 	private final ViewConfig viewConfig = new ViewConfig(controllerConfig);
 
 	public AppConfig() {
-		mockDataInitializer.initialize();
+		if (!repositoryConfig.isJdbcMode()) {
+			mockDataInitializer.initialize();
+		}
 	}
 
 	public MainView mainView() {
