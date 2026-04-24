@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import com.lxp.exception.ErrorCode;
 import com.lxp.exception.LxpException;
+import com.lxp.transaction.TransactionSynchronizationManager;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,35 +21,33 @@ public class JdbcTemplate {
 	private final ConnectionProvider connectionProvider;
 
 	public int update(String sql, PreparedStatementSetter statementSetter) {
-		try (
-			Connection connection = connectionProvider.getConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement(sql)
-		) {
+		Connection connection = connection();
+		try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 			statementSetter.setValues(preparedStatement);
 			return preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			throw new LxpException(ErrorCode.INTERNAL_SERVER_ERROR);
+		} finally {
+			close(connection);
 		}
 	}
 
 	public long insert(String sql, PreparedStatementSetter statementSetter) {
-		try (
-			Connection connection = connectionProvider.getConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
-		) {
+		Connection connection = connection();
+		try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 			statementSetter.setValues(preparedStatement);
 			preparedStatement.executeUpdate();
 			return generatedKey(preparedStatement);
 		} catch (SQLException e) {
 			throw new LxpException(ErrorCode.INTERNAL_SERVER_ERROR);
+		} finally {
+			close(connection);
 		}
 	}
 
 	public <T> List<T> query(String sql, PreparedStatementSetter statementSetter, RowMapper<T> rowMapper) {
-		try (
-			Connection connection = connectionProvider.getConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement(sql)
-		) {
+		Connection connection = connection();
+		try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 			statementSetter.setValues(preparedStatement);
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				List<T> rows = new ArrayList<>();
@@ -59,6 +58,8 @@ public class JdbcTemplate {
 			}
 		} catch (SQLException e) {
 			throw new LxpException(ErrorCode.INTERNAL_SERVER_ERROR);
+		} finally {
+			close(connection);
 		}
 	}
 
@@ -79,6 +80,28 @@ public class JdbcTemplate {
 			if (generatedKeys.next()) {
 				return generatedKeys.getLong(1);
 			}
+			throw new LxpException(ErrorCode.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	private Connection connection() {
+		if (TransactionSynchronizationManager.hasConnection()) {
+			return TransactionSynchronizationManager.getConnection();
+		}
+		try {
+			return connectionProvider.getConnection();
+		} catch (SQLException e) {
+			throw new LxpException(ErrorCode.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	private void close(Connection connection) {
+		if (TransactionSynchronizationManager.isCurrentConnection(connection)) {
+			return;
+		}
+		try {
+			connection.close();
+		} catch (SQLException e) {
 			throw new LxpException(ErrorCode.INTERNAL_SERVER_ERROR);
 		}
 	}

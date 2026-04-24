@@ -37,7 +37,7 @@ class ContentServiceTest {
 	private ContentRepository contentRepository;
 
 	@InjectMocks
-	private ContentService contentService;
+	private DefaultContentService contentService;
 
 	@Test
 	@DisplayName("성공 - 콘텐츠를 등록하면 다음 seq를 부여한다")
